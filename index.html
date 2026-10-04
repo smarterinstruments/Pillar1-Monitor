@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Independent weekly monitor of the EU Chips Act Pillar I: pilot lines, the European Chips Design Platform, the Chips Competence Centres and the aCCCess network action. Alpha version.">
+<meta name="robots" content="noindex">
+<title>EU Chips Act Pillar I Monitor</title>
+<style>
+/* Layout: Radar-family dark console — header strip, tab rail, one panel per tab; overview leads with the three Pillar I components */
+:root{
+  --bg:#0d1016; --panel:#141922; --panel2:#1a2029; --rule:#283040; --fg:#e7eaf0; --muted:#8e97a8; --faint:#5d6677;
+  --logic:#7f77dd; --pack:#1d9e75; --phot:#378add; --power:#d85a30; --quant:#ef9f27; --accent:#378add;
+  --c-pl:#378add; --c-cdp:#c2298a; --c-ccc:#1d9e75; --c-acc:#9b7fe6;
+  --good:#3fb27f; --warn:#e0a63a;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--sans);margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:20px 48px}
+a{color:#6fb3f2}
+a:focus-visible,button:focus-visible{outline:2px solid var(--phot);outline-offset:2px}
+.strip{font:12px/1.4 var(--mono);color:var(--muted);letter-spacing:.02em;display:flex;flex-wrap:wrap;gap:4px 14px;border-bottom:1px solid var(--rule);padding-bottom:10px}
+.strip b{color:var(--fg);font-weight:600}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:18px 0 6px;letter-spacing:-.01em;text-wrap:balance}
+.lede{color:var(--muted);max-width:75ch;margin:0 0 18px}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--rule);margin-bottom:22px;scrollbar-width:thin}
+nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:600 13px var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:10px 12px;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+nav.tabs button:hover{color:var(--fg)}
+section.tab{display:none}
+section.tab.on{display:block}
+h2{font-size:20px;margin:0 0 6px;text-wrap:balance}
+h3.sh{font-size:16px;margin:26px 0 8px}
+.sub{color:var(--muted);margin:0 0 16px;max-width:75ch}
+.grid2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.grid4{grid-template-columns:1fr}}
+@media (max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 18px}
+@media (max-width:980px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;border-left:3px solid var(--cc)}
+.stat .v{font:600 26px/1.1 var(--sans);font-variant-numeric:tabular-nums}
+.stat .l{font-size:13px}
+.stat .s{font-size:12px;color:var(--muted);margin-top:2px}
+.comp{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;border-top:3px solid var(--cc);min-width:0;display:flex;flex-direction:column;gap:6px}
+.comp h3{margin:0;font-size:16px}
+.comp .st{font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--cc)}
+.comp p{margin:0;font-size:14px;color:var(--fg)}
+.comp button{align-self:flex-start;margin-top:auto;background:none;border:1px solid var(--rule);color:var(--fg);border-radius:6px;padding:5px 10px;font:600 12px var(--sans);cursor:pointer}
+.comp button:hover{border-color:var(--cc)}
+.radar svg{width:100%;height:auto;display:block}
+.ringkey{display:grid;gap:10px}
+.ringkey .rk{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;padding:10px 12px;background:var(--panel);border:1px solid var(--rule);border-radius:6px}
+.ringkey .n{font:600 13px var(--mono);color:var(--muted)}
+.ringkey .t{font-weight:600}
+.ringkey .d{color:var(--muted);font-size:13px}
+.ringkey .who{font-size:13px;margin-top:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--muted);margin-top:10px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.cards.sm{grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+@media (max-width:420px){.cards,.cards.sm{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;min-width:0;border-top:3px solid var(--c,var(--rule))}
+.card h3{margin:0;font-size:17px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.cards.sm .card{padding:12px 14px}
+.cards.sm .card h3{font-size:15px}
+.pill{font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.r1{color:var(--good)} .r2{color:#7cc0ff} .r3{color:var(--warn)} .r4{color:var(--muted)}
+.meta{font:12px/1.5 var(--mono);color:var(--muted);margin:4px 0 10px}
+.card dl{margin:0;display:grid;gap:7px}
+.card dt{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+.card dd{margin:0;font-size:14px}
+.card .links{margin-top:10px;font-size:13px;display:flex;gap:12px;flex-wrap:wrap}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.chip{font:600 10.5px var(--mono);padding:1px 6px;border-radius:4px;background:var(--panel2);color:var(--muted)}
+.tl svg{width:100%;height:auto;display:block;min-width:640px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--rule)}
+th{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+td.d{font:13px var(--mono);white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums}
+td.k{color:var(--muted);white-space:nowrap;font-weight:600}
+.tag{display:inline-block;font:600 11px var(--mono);padding:1px 6px;border-radius:4px;background:var(--panel2);color:var(--fg);white-space:nowrap}
+.ct{display:inline-block;font:600 10.5px var(--mono);padding:1px 6px;border-radius:4px;border:1px solid var(--cc);color:var(--cc);white-space:nowrap;margin:2px 2px 0 0}
+.note{font-size:13px;color:var(--muted);margin-top:10px;max-width:80ch}
+.callout{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:14px 16px;margin:0 0 18px}
+.callout h3{margin:0 0 6px;font-size:15px}
+.callout ul{margin:6px 0 0;padding-left:18px}
+.watch{border-left:3px solid var(--warn)}
+.watch li{margin-bottom:4px}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;align-items:center}
+.filters .lb{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-right:4px}
+.filters button{background:var(--panel);border:1px solid var(--rule);color:var(--muted);border-radius:999px;padding:4px 11px;font:600 12px var(--sans);cursor:pointer}
+.filters button[aria-pressed="true"]{color:var(--fg);border-color:var(--fg)}
+.ty{display:inline-block;font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:4px;border:1px solid currentColor;white-space:nowrap;margin-top:4px}
+.ty-roadmap{color:var(--warn)} .ty-service{color:var(--good)} .ty-event{color:#7cc0ff} .ty-milestone{color:var(--muted)}
+.svc{display:inline-block;font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:4px;border:1px solid currentColor;white-space:nowrap}
+.svc-live{color:var(--good)} .svc-building{color:#7cc0ff} .svc-planned{color:var(--muted)} .svc-done{color:var(--muted)}
+.cohort{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:600px){.cohort{grid-template-columns:1fr}}
+.cohort ul{margin:6px 0 0;padding-left:18px;columns:2;column-gap:18px;font-size:14px}
+.vsum{display:flex;gap:16px;align-items:flex-start}
+.vsum .v{font:700 40px/1 var(--mono);color:var(--c-acc)}
+.vsum p{margin:0 0 6px}
+.mk{display:inline-block;font:600 9.5px var(--mono);letter-spacing:.04em;border:1px solid var(--cc);color:var(--cc);border-radius:3px;padding:0 4px;margin-left:5px;vertical-align:1px}
+.cvfl{margin:8px 0 0;padding-left:18px;columns:3;column-gap:20px;font-size:14px}
+.cvfl li{break-inside:avoid}
+@media (max-width:700px){.cvfl{columns:2}}
+@media (max-width:420px){.cvfl{columns:1}.vsum{flex-direction:column;gap:6px}}
+.bars{display:grid;gap:5px;max-width:720px}
+.bar{display:grid;grid-template-columns:150px 1fr 32px;align-items:center;gap:10px;font-size:13px}
+.bt{background:var(--panel2);border-radius:3px;height:14px;overflow:hidden}
+.bf{display:block;height:100%;background:var(--c-acc)}
+.bn{font:600 13px var(--mono);text-align:right}
+svg.hm{display:block;width:100%;min-width:720px;height:auto;max-width:900px}
+svg.hm text{font-family:var(--sans)}
+svg.hm .fam{font-size:11px;font-weight:600;fill:var(--muted)}
+svg.hm .dl{font-size:10.5px;fill:var(--fg)}
+svg.hm .tl{font-size:11px;fill:var(--muted)}
+svg.hm .tn{font-size:11px;font-weight:600;fill:var(--muted)}
+svg.hm .tn.lo{fill:var(--warn)}
+svg.hm .gl{font-size:10px;font-weight:600;fill:var(--faint);letter-spacing:.06em}
+svg.hm .cl{font-size:11.5px;fill:var(--fg)}
+svg.hm .c{fill:var(--c-ccc)}
+svg.hm .c0{fill:none;stroke:var(--rule)}
+svg.hm .hv{font-size:10px;font-weight:600;fill:var(--bg)}
+svg.hm .lg,svg.dg .lg{font-size:11px;fill:var(--muted)}
+svg.dg{display:block;width:100%;min-width:620px;height:auto;max-width:900px}
+svg.dg text{font-family:var(--sans)}
+svg.dg .gr{stroke:var(--rule)}
+svg.dg .dn{font-size:12.5px;fill:var(--fg)}
+svg.dg .dn.up{font-weight:600}
+svg.dg .lk{stroke:var(--faint);stroke-width:3;stroke-opacity:.6}
+svg.dg .lk.up{stroke:var(--warn);stroke-opacity:.8}
+svg.dg .sup{fill:var(--muted)}
+svg.dg .dem{fill:var(--c-ccc)}
+svg.dg .vs{font-size:11px;fill:var(--muted)}
+svg.dg .vd{font-size:11px;font-weight:600;fill:var(--c-ccc)}
+p.lead{max-width:80ch;margin:0 0 10px}
+caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted);padding-top:8px}
+.alpha{font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:2px 7px;vertical-align:middle;margin-left:6px}
+.alphabar{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--warn);border-radius:6px;padding:10px 14px;margin:0 0 18px;font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.alphabar button{background:none;border:1px solid var(--warn);color:var(--fg);border-radius:6px;padding:4px 10px;font:600 12px var(--sans);cursor:pointer}
+.fbq{max-width:80ch;padding-left:22px}
+.fbq li{margin-bottom:10px}
+.fbq b{display:block}
+.mail{font:600 15px var(--mono);user-select:all}
+.copy{background:none;border:1px solid var(--rule);color:var(--fg);border-radius:6px;padding:4px 10px;font:600 12px var(--sans);cursor:pointer;margin-left:8px}
+.foot{margin-top:36px;border-top:1px solid var(--rule);padding-top:12px;font:12px var(--mono);color:var(--faint)}
+@media (prefers-reduced-motion:no-preference){.dot{transition:r .15s}.dot:hover{r:9}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="strip" id="strip"></div>
+  <h1>EU Chips Act Pillar I Monitor <span class="alpha">alpha</span></h1>
+  <p class="lede" id="lede"></p>
+  <div class="alphabar" id="alphabar"></div>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" data-tab="overview" id="t-overview">Overview</button>
+    <button role="tab" data-tab="pilotlines" id="t-pilotlines">Pilot lines</button>
+    <button role="tab" data-tab="platform" id="t-platform">Design platform</button>
+    <button role="tab" data-tab="centres" id="t-centres">Competence centres</button>
+    <button role="tab" data-tab="acc" id="t-acc" style="text-transform:none">aCCCess</button>
+    <button role="tab" data-tab="complementarity" id="t-complementarity">Complementarity</button>
+    <button role="tab" data-tab="news" id="t-news">This week</button>
+    <button role="tab" data-tab="events" id="t-events">Events &amp; deadlines</button>
+    <button role="tab" data-tab="feedback" id="t-feedback">Feedback</button>
+    <button role="tab" data-tab="sources" id="t-sources">Sources</button>
+  </nav>
+
+  <section class="tab" id="overview">
+    <h2>Pillar I at a glance</h2>
+    <p class="sub">The Chips for Europe Initiative builds three kinds of shared infrastructure: pilot lines to make new chips, a design platform to design them, and national competence centres to bring users to both.</p>
+    <div class="stats" id="stats"></div>
+    <div class="grid4" id="comps"></div>
+    <div class="callout watch" id="ovWatch" style="margin-top:18px"></div>
+    <h3 class="sh">What comes next</h3>
+    <div class="scroll"><table id="nextTbl"></table></div>
+  </section>
+
+  <section class="tab" id="pilotlines">
+    <h2>Pilot lines: where each line stands on the road to open access</h2>
+    <p class="sub">The centre of the radar is full open access with external users; the outer ring is lines that have just started their first funding phase. Click a dot to open the line's card.</p>
+    <div class="grid2">
+      <div class="radar" id="radarSvg"></div>
+      <div>
+        <div class="ringkey" id="ringKey"></div>
+        <div class="legend" id="sectorLegend"></div>
+      </div>
+    </div>
+    <h3 class="sh">When external users get in</h3>
+    <p class="sub">Shaded bars show services open to external users today; diamonds are announced milestones; dashed boxes are planned access without an exact date.</p>
+    <div class="tl scroll" id="tlSvg"></div>
+    <h3 class="sh">The 11 pilot lines</h3>
+    <p class="sub">Five semiconductor lines from the first Chips for Europe call and six quantum lines selected in 2025. Budgets are total public and private funding; quantum figures cover the first specific grant.</p>
+    <div class="cards" id="cards"></div>
+    <h3 class="sh">Access through competence centres</h3>
+    <div class="callout" id="legal"></div>
+    <div class="scroll"><table id="entryTbl"></table></div>
+    <h3 class="sh">How national centres organise pilot-line access</h3>
+    <div class="scroll"><table id="modelTbl"></table></div>
+  </section>
+
+  <section class="tab" id="platform">
+    <h2>European Chips Design Platform (EuroCDP)</h2>
+    <p class="sub">A cloud-based entry point for start-ups and SMEs to EDA tools, IP, PDKs, design support and venture development.</p>
+    <div class="scroll"><table id="cdpFacts"></table></div>
+    <h3 class="sh">Services and their status</h3>
+    <div class="scroll"><table id="cdpSvc"></table></div>
+    <h3 class="sh">Vendor agreements</h3>
+    <div class="scroll"><table id="cdpAgr"></table></div>
+    <h3 class="sh">Venture Development Programme, cohort 1</h3>
+    <div class="callout" id="cdpCohort"></div>
+    <h3 class="sh">Design Enablement Teams</h3>
+    <div class="scroll"><table id="cdpDet"></table></div>
+    <h3 class="sh">Roadmap</h3>
+    <div class="scroll"><table id="cdpRoad"></table></div>
+    <p class="note" id="cdpLinks"></p>
+  </section>
+
+  <section class="tab" id="centres">
+    <h2>Chips Competence Centres</h2>
+    <p class="sub">National entry points that bring companies, start-ups and researchers to the pilot lines, the design platform, training and funding. Coordinated as one network by the aCCCess action.</p>
+    <div class="scroll"><table id="cccFacts"></table></div>
+    <h3 class="sh">Alliances between centres</h3>
+    <div class="scroll"><table id="cccAct"></table></div>
+    <p class="note">Joint offers run by the network action are on the <a href="#acc" data-go="acc">aCCCess tab</a>; how the centres complement each other is on the <a href="#complementarity" data-go="complementarity">Complementarity tab</a>.</p>
+    <h3 class="sh">The 30 centres</h3>
+    <div class="filters" id="cccFilters" role="group" aria-label="Filter centres by focus"></div>
+    <div class="cards sm" id="cccCards"></div>
+  </section>
+
+  <section class="tab" id="acc">
+    <h2>aCCCess: the network action of the competence centres</h2>
+    <p class="sub">aCCCess is the coordination and support action that turns the 30 centres into one European network and links them with the pilot lines and EuroCDP. This tab tracks what it has delivered.</p>
+    <div class="scroll"><table id="accFacts"></table></div>
+    <h3 class="sh">Results so far</h3>
+    <div class="scroll"><table id="accRes"></table></div>
+    <h3 class="sh">Chips Venture Forum</h3>
+    <div class="callout vsum" id="accVenture"></div>
+    <div class="scroll"><table id="accVentTbl"></table></div>
+    <div class="callout" id="cvfList" style="margin-top:14px"></div>
+    <h3 class="sh">Training catalogue</h3>
+    <div id="accTrain"></div>
+    <h3 class="sh">Network activities</h3>
+    <div class="scroll"><table id="accAct"></table></div>
+    <p class="note" id="accLinks"></p>
+  </section>
+
+  <section class="tab" id="complementarity">
+    <h2>How the competence centres complement each other</h2>
+    <p class="sub" id="cmpLede"></p>
+    <div class="callout" id="cmpFind"></div>
+    <h3 class="sh">Capability map</h3>
+    <div class="scroll" id="cmpHeat"></div>
+    <h3 class="sh">Where demand exceeds supply</h3>
+    <div class="scroll" id="cmpGap"></div>
+    <h3 class="sh">Value-chain profiles</h3>
+    <div class="scroll"><table id="cmpProf"></table></div>
+    <h3 class="sh">Complementary pairs</h3>
+    <p class="sub">Each side gains the domains that its partner rates as a main focus and it rates at most as emerging.</p>
+    <div class="scroll"><table id="cmpPairs"></table></div>
+    <h3 class="sh">Regional groups</h3>
+    <div class="scroll"><table id="cmpReg"></table></div>
+    <h3 class="sh">Entry points to Pillar I</h3>
+    <div class="scroll"><table id="cmpEntry"></table></div>
+    <h3 class="sh">What the centres want from the network</h3>
+    <div class="scroll"><table id="cmpThemes"></table></div>
+    <h3 class="sh">What public sources add to the survey</h3>
+    <div class="scroll"><table id="cmpPublic"></table></div>
+    <p class="note" id="cmpMethod"></p>
+  </section>
+
+  <section class="tab" id="news">
+    <h2>News log</h2>
+    <p class="sub" id="newsSub"></p>
+    <div class="callout watch" id="watch"></div>
+    <div class="filters" id="fComp" role="group" aria-label="Filter by component"></div>
+    <div class="filters" id="fType" role="group" aria-label="Filter by type"></div>
+    <div class="scroll"><table id="newsTbl"></table></div>
+    <p class="note">Dates marked ≈ are derived from the relative age of the post (for example "1w").</p>
+  </section>
+
+  <section class="tab" id="events">
+    <h2>Upcoming events and deadlines</h2>
+    <p class="sub">Where pilot lines, the design platform and competence centres present their offer, plus calls that depend on them.</p>
+    <div class="filters" id="fEv" role="group" aria-label="Filter events by component"></div>
+    <div class="scroll"><table id="evTbl"></table></div>
+  </section>
+
+  <section class="tab" id="feedback">
+    <h2>Help us get it right</h2>
+    <p class="sub" id="fbIntro"></p>
+    <ol class="fbq" id="fbList"></ol>
+    <div class="callout" id="fbContact"></div>
+  </section>
+
+  <section class="tab" id="sources">
+    <h2>Sources and method</h2>
+    <p class="sub" id="method"></p>
+    <ul id="srcList"></ul>
+  </section>
+
+  <div class="foot" id="foot"></div>
+</div>
+
+<script type="application/json" id="monitor-data">
+{
+  "meta": {"edition": "W40/2026", "updated": "2026-10-04", "author": "Stanislav Černý", "org": "Czech National Semiconductor Cluster", "lede": "Progress of the Chips for Europe Initiative, Pillar I of the EU Chips Act, in one place: the pilot lines, the European Chips Design Platform and the network of Chips Competence Centres. Updated weekly from the initiatives' own channels, CORDIS and the Chips JU."},
+  "sectors": [
+    {"id": "logic", "name": "Logic & memory", "short": "Logic & memory", "color": "var(--logic)"},
+    {"id": "pack", "name": "Packaging & integration", "short": "Packaging", "color": "var(--pack)"},
+    {"id": "phot", "name": "Photonics", "short": "Photonics", "color": "var(--phot)"},
+    {"id": "power", "name": "Power / wide-bandgap", "short": "Power (WBG)", "color": "var(--power)"},
+    {"id": "quant", "name": "Quantum", "short": "Quantum", "color": "var(--quant)"}
+  ],
+  "rings": [
+    {"n": 1, "name": "Open access running", "desc": "Calls or one-stop-shop requests accepted; external projects under way."},
+    {"n": 2, "name": "Early access", "desc": "Design kits, consulting, training or prototyping offered before full capacity."},
+    {"n": 3, "name": "Preparing access", "desc": "Infrastructure and third-party access rules being set up; no public call yet."},
+    {"n": 4, "name": "Ramp-up", "desc": "First specific grant started in 2026; external access announced for 2027 or later, or not dated."}
+  ],
+  "lines": [
+    {"id": "fames", "name": "FAMES", "sector": "logic", "ring": 1, "tech": "FD-SOI 10/7 nm, embedded NVM, RF, 3D, power management", "coord": "CEA-Leti", "budget": "€830M", "consortium": "11 partners · 8 countries", "start": "Dec 2023", "status": "Inaugurated 30 Jan 2026. Annual open access call (2026: 9 Mar–22 May). First named industrial user Quobly announced 29 Sep 2026.", "now": "10 nm FD-SOI pathfinding PDK (Release 1), free under NDA and design-kit licence; spontaneous requests any time.", "next": "AlN/ScAlN RF filters and PCM RF switches Q4 2026; analog/RF PDK Release 2 Q1 2027; next call Mar–May 2027.", "entry": "Open Access Committee (open-access-chair@fames-pilot-line.eu)", "pricing": "Per project; SME, start-up and academic requests get a ranking bonus when oversubscribed", "ccc": "Access guidelines name competence centres as helpers for submitting requests", "web": "https://fames-pilot-line.eu/open-access/", "li": "https://www.linkedin.com/company/fames-pilot-line/", "tl": [{"k": "open", "s": "2026-01-01", "e": "2028-12-31", "l": "PDK 10 nm, annual calls, spontaneous requests"}]},
+    {"id": "nanoic", "name": "NanoIC", "sector": "logic", "ring": 2, "tech": "Beyond-2 nm logic, memory and interconnect", "coord": "imec", "budget": "€2.5B", "consortium": "6 partners · 6 countries", "start": "Jan 2024", "status": "Inaugurated 9 Feb 2026. High-NA EUV (EXE:5200) installed; qualification targeted Q4 2026, described as nearing completion in Sep 2026.", "now": "PDKs via Europractice: N2, A14 logic, eDRAM, fine-pitch RDL, die-to-wafer hybrid bonding. Free for academia and start-ups.", "next": "Hardware prototyping for external users from 2028.", "entry": "Europractice PDK desk (imecpdk@imec.be)", "pricing": "PDKs free for academia and start-ups; hardware pricing not published", "ccc": "Courses developed with competence centres; internships", "web": "https://www.nanoic-project.eu/en/access", "li": "https://www.linkedin.com/company/nanoic-pilot-line/", "tl": [{"k": "open", "s": "2026-01-01", "e": "2028-12-31", "l": "PDKs only (N2, A14, RDL)"}, {"k": "plan", "s": "2028-01-01", "e": "2028-12-31", "l": "prototyping"}]},
+    {"id": "apecs", "name": "APECS", "sector": "pack", "ring": 1, "tech": "Advanced packaging, chiplets, heterogeneous integration", "coord": "Fraunhofer / FMD", "budget": "€730M", "consortium": "10 partners · 8 countries", "start": "Dec 2024", "status": "First quasi-monolithic integration milestone (May 2026). First Open Access Call ran 1 Apr–30 Jun 2026. Interposer platform (silicon, organic, glass) shown at FIRST, Berlin, 30 Sep–1 Oct 2026.", "now": "One-Stop-Shop Office: characterisation, test and reliability; MPW; integration and packaging; photonic and passive components. Entry at any stage from idea to medium-volume manufacturing.", "next": "Roadshow Graz and Klagenfurt 7–8 Oct 2026; next call not yet announced.", "entry": "One-Stop-Shop Office (experts@apecs.eu)", "pricing": "Paid services; price list not published", "ccc": "Roadshows co-hosted with national centres and clusters (ChipNL, AT-C³)", "web": "https://www.apecs.eu/en/open-access.html", "li": "https://www.linkedin.com/company/apecs-pilot-line/", "tl": [{"k": "open", "s": "2026-04-01", "e": "2028-12-31", "l": "One-Stop-Shop, first call Apr–Jun 2026"}]},
+    {"id": "pix", "name": "PIXEurope", "sector": "phot", "ring": 2, "tech": "Photonic ICs: Si, SiN, InP, LNOI, SiC and hybrid integration", "coord": "ICFO", "budget": "≈€400M", "consortium": "20 partners · 11 countries", "start": "Jun 2025", "status": "Public launch 21 May 2026; four of five service lines live. Three new facilities under construction and eight being upgraded.", "now": "Consultancy, training, prototyping and collaborative R&D through a single central gateway.", "next": "Existing partner infrastructure Nov 2026; ≥50% of new equipment accepted by May 2027; full capacity with MPW in 2028 (all equipment by Sep 2028).", "entry": "Single Central Gateway (pixeurope.eu/open-access)", "pricing": "Depends on eligibility, platform, wafer size and partner terms; not published", "ccc": "Training with PIXSpain at ECOC 2026; paired webinar with PIXSpain 29 Oct", "web": "https://pixeurope.eu/open-access/", "li": "https://www.linkedin.com/company/pixeurope/", "tl": [{"k": "open", "s": "2026-05-21", "e": "2028-12-31", "l": ""}, {"k": "mile", "s": "2026-11-01", "l": "partner infra"}, {"k": "mile", "s": "2027-05-01", "l": "50% equipment"}, {"k": "mile", "s": "2028-05-01", "l": "full + MPW"}]},
+    {"id": "wbg", "name": "WBG Pilot Line", "sector": "power", "ring": 3, "tech": "SiC, GaN and ultra-wide-bandgap power and RF devices", "coord": "CNR-IMM Catania", "budget": "€360M", "consortium": "15 RTOs · 7 countries", "start": "Jun 2025", "status": "Launched Sep 2025. New Catania site awaiting permits (Dec 2025). Consortium preparing third-party access on partners' existing tools (Jun 2026).", "now": "Contact and early engagement; access portal online.", "next": "No public call announced.", "entry": "Access portal (wbg-access.fbk.eu)", "pricing": "Not published", "ccc": "No formal link found", "web": "https://www.wbg-pilot-line.eu/", "li": "https://www.linkedin.com/company/wbg-pilot-line/", "tl": [{"k": "none", "l": "access being prepared, no date"}]},
+    {"id": "champion", "name": "CHAMP-ION", "sector": "quant", "ring": 4, "tech": "Ion-trap chips: surface, monolithic, stacked and MEMS traps", "coord": "Silicon Austria Labs", "budget": "€50M", "consortium": "21 partners · 6 countries", "start": "Mar 2026", "status": "Opening event 27 May 2026; website live Sep 2026.", "now": "Early engagement with users.", "next": "Initial access early 2028, then standard service packages (MPW, design support, packaging, validation).", "entry": "Single entry point (champ-ion.eu)", "pricing": "Not published", "ccc": "No formal link found", "web": "https://champ-ion.eu/", "li": "https://www.linkedin.com/company/champ-ion/", "tl": [{"k": "plan", "s": "2028-01-01", "e": "2028-03-31", "l": "early 2028"}]},
+    {"id": "supreme", "name": "SUPREME", "sector": "quant", "ring": 4, "tech": "Superconducting qubits, Josephson junctions on 200 mm, 3D integration", "coord": "VTT", "budget": "€50M", "consortium": "23 partners · 8 countries", "start": "Apr 2026", "status": "Kick-off 13 May 2026; seventh project month in Sep 2026.", "now": "Early engagement with users.", "next": "External user access in 2027: PDKs, shared fabrication runs, service office.", "entry": "supreme-quantum.eu", "pricing": "Licensed services; not published", "ccc": "No formal link found", "web": "https://supreme-quantum.eu/", "li": "https://www.linkedin.com/company/supreme-pilot-line/", "tl": [{"k": "plan", "s": "2027-01-01", "e": "2027-12-31", "l": "2027"}]},
+    {"id": "spins", "name": "SPINS", "sector": "quant", "ring": 4, "tech": "Spin qubits on 300 mm (SOI, Si/SiGe, Ge)", "coord": "imec", "budget": "≈€50M", "consortium": "25 partners", "start": "Apr 2026", "status": "Launched Apr 2026 with start-up lead users.", "now": "Early engagement with users.", "next": "MPW runs and quantum PDKs for start-ups and SMEs; date not announced.", "entry": "imec", "pricing": "Not published", "ccc": "No formal link found", "web": "https://www.imec-int.com/en/press/semiconductor-based-quantum-pilot-line-spins-launched-eu-support", "li": "https://www.linkedin.com/company/spins-pilot-line/", "tl": [{"k": "none", "l": "date not announced"}]},
+    {"id": "p4q", "name": "P4Q", "sector": "quant", "ring": 4, "tech": "Photonics for quantum: SiN, TFLN, AlOx, quantum-dot sources", "coord": "University of Twente", "budget": "€51.5M", "consortium": "29 partners · 12 countries", "start": "Apr 2026", "status": "Kick-off May 2026. Partner AlOx platform already available.", "now": "Early engagement with users.", "next": "PDKs and ADKs; date not announced.", "entry": "photonics4quantum.eu", "pricing": "Not published", "ccc": "No formal link found", "web": "https://www.photonics4quantum.eu/", "li": "https://www.linkedin.com/company/photonics4quantum/", "tl": [{"k": "none", "l": "date not announced"}]},
+    {"id": "qplanet", "name": "Q-PLANET", "sector": "quant", "ring": 4, "tech": "Neutral-atom chips: lasers, atom chips, vapour cells", "coord": "Pasqal", "budget": "€50M", "consortium": "28 partners · 11 countries", "start": "May 2026", "status": "Kick-off 8–9 Jul 2026; grant signed 18 Sep 2026.", "now": "Early engagement with users.", "next": "Open PDKs and ADKs; date not announced.", "entry": "q-planet.eu", "pricing": "Not published", "ccc": "No formal link found", "web": "https://www.q-planet.eu/", "li": "https://www.linkedin.com/company/q-planet-pilot-line/", "tl": [{"k": "none", "l": "date not announced"}]},
+    {"id": "direqt", "name": "DIREQT", "sector": "quant", "ring": 4, "tech": "Diamond quantum technologies", "coord": "CNR", "budget": "€50M", "consortium": "31 partners · 13 countries", "start": "Jul 2026", "status": "Grant signed 4 Sep 2026; no public launch yet.", "now": "Not yet engaging users publicly.", "next": "Open-access framework announced; date not announced.", "entry": "No website yet", "pricing": "Not published", "ccc": "No formal link found", "web": "https://cordis.europa.eu/project/id/101291215", "li": "", "tl": [{"k": "none", "l": "date not announced"}]}
+  ],
+  "news": [
+    {"d": "2026-10-01", "a": false, "line": "NanoIC", "t": "Article on early-access PDKs: pathfinding PDKs for logic beyond 2 nm and system-exploration PDKs for memory and interconnect, with access steps.", "u": "https://www.linkedin.com/company/nanoic-pilot-line/posts/", "ty": "service", "c": ["pl"]},
+    {"d": "2026-10-01", "a": false, "c": ["cdp"], "ty": "event", "line": "EuroCDP", "t": "FIRST by FMD, Berlin: panel on what start-ups, SMEs and researchers need to turn ideas into silicon.", "u": "https://www.linkedin.com/company/eurocdp/posts/"},
+    {"d": "2026-09-30", "a": true, "c": ["acc"], "ty": "event", "line": "aCCCess", "t": "Chips Venture Forum 2026: 62 start-ups listed for investor meetings in Bordeaux (21–22 Oct; Blumorpho: 60 meet investors, 36 pitch live), then the INPHO Venture Summit (22–23 Oct) and the final at SEMICON Europa (11 Nov). Four come from EuroCDP cohort 1: FrostByte, IC Waves, Last Mile Semiconductor, Nellow.", "u": "https://www.acccess.eu/chips-venture-forum/2026-companies"},
+    {"d": "2026-09-30", "a": false, "line": "APECS", "t": "FIRST by FMD, Berlin: interposer platform with silicon, organic and glass substrates; companies can enter at any stage up to medium-volume manufacturing.", "u": "https://www.linkedin.com/company/apecs-pilot-line/posts/", "ty": "service", "c": ["pl"]},
+    {"d": "2026-09-29", "a": false, "line": "FAMES", "t": "Quobly gains access to FAMES through CEA-Leti for next-generation silicon quantum processors: first named industrial user.", "u": "https://www.linkedin.com/company/fames-pilot-line/posts/", "ty": "milestone", "c": ["pl"]},
+    {"d": "2026-09-29", "a": false, "c": ["cdp", "ccc"], "ty": "event", "line": "EuroCDP + Nordic CCCs", "t": "Nordic Chip Collaboration Meetup, Trondheim: EuroCDP service offer presented with FiCCC, SCCC, CC-NorChip and DKCCC.", "u": "https://www.linkedin.com/company/eurocdp/posts/"},
+    {"d": "2026-09-29", "a": false, "c": ["ccc"], "ty": "milestone", "line": "ChipsC²-LT", "t": "Lithuanian centre presents eight Chips Act 2.0 proposals to the European Commission in Vilnius.", "u": "https://chipsc2.lt/"},
+    {"d": "2026-09-28", "a": false, "line": "FAMES + NanoIC", "t": "Joint booths and open-access presentations at IWJT 2026, Grenoble.", "u": "https://www.linkedin.com/company/fames-pilot-line/posts/", "ty": "event", "c": ["pl"]},
+    {"d": "2026-09-27", "a": true, "line": "PIXEurope", "t": "Infrastructure plan published: 3 new facilities, 8 upgrades; ≥50% of equipment accepted by May 2027, 100% by Sep 2028. TNO's 6-inch InP line in Eindhoven tops out.", "u": "https://www.linkedin.com/company/pixeurope/posts/", "ty": "roadmap", "c": ["pl"]},
+    {"d": "2026-09-27", "a": true, "line": "FAMES", "t": "Brochure for the 10 nm FD-SOI pathfinding PDK released.", "u": "https://www.linkedin.com/company/fames-pilot-line/posts/", "ty": "service", "c": ["pl"]},
+    {"d": "2026-09-27", "a": true, "line": "Q-PLANET", "t": "Coordinator video on goals: €49M, 28 partners, three years; Centrale Lille/IEMN to host a second vapour-cell production centre.", "u": "https://www.linkedin.com/company/q-planet-pilot-line/posts/", "ty": "milestone", "c": ["pl"]},
+    {"d": "2026-09-25", "a": false, "c": ["ccc", "cdp"], "ty": "service", "line": "CSC + 4 CCCs", "t": "Pilot IP Block Catalogue: 47 design IP blocks from 34 providers, piloted with centres in NL, SK, SE and SI as a route towards EuroCDP.", "u": "https://czechsemiconductorcentre.cz/pilot-ip-block-catalogue-opens-a-structured-route-to-reusable-semiconductor-design-ip/"},
+    {"d": "2026-09-24", "a": false, "c": ["cdp"], "ty": "milestone", "line": "EuroCDP", "t": "2026 call for Design Enablement Teams closed (€5M, about 10 teams); results pending.", "u": "https://ncpflanders.be/news/new-chips-ju-calls-under-digital-europe"},
+    {"d": "2026-09-23", "a": false, "line": "PIXEurope", "t": "Training with the Spanish competence centre PIXSpain alongside ECOC, Málaga, on access to pilot prototyping.", "u": "https://www.linkedin.com/company/pixeurope/posts/", "ty": "event", "c": ["pl", "ccc"]},
+    {"d": "2026-09-23", "a": false, "c": ["ccc", "pl"], "ty": "event", "line": "SCCC", "t": "Swedish centre's webinar on the WBG pilot line; 2D pilot line webinar follows on 13 Oct.", "u": "https://sccc.se/"},
+    {"d": "2026-09-22", "a": false, "c": ["cdp"], "ty": "event", "line": "EuroCDP", "t": "Venture Development Programme phase two: four-day Accelerate bootcamp in Kraków; finale in Malta in November.", "u": "https://www.linkedin.com/company/eurocdp/posts/"},
+    {"d": "2026-09-22", "a": false, "c": ["acc", "ccc"], "ty": "event", "line": "aCCCess", "t": "Training Offers webinar #1 with ChipNL and CC Chip.si; #2 with PIXSpain and POEMS on 27 Oct.", "u": "https://www.acccess.eu/news/webinar-series-on-semiconductor-training-offers1-149"},
+    {"d": "2026-09-22", "a": false, "c": ["ccc"], "ty": "service", "line": "FiCCC", "t": "Six-month start-up mentoring pilot with Technology Industries of Finland and Aalto.", "u": "https://www.ficcc.eu/"},
+    {"d": "2026-09-21", "a": false, "line": "FAMES", "t": "First FAMES Academy short course in Grenoble: 13 speakers, including open-access mechanisms.", "u": "https://www.linkedin.com/company/fames-pilot-line/posts/", "ty": "event", "c": ["pl"]},
+    {"d": "2026-09-21", "a": false, "c": ["cdp"], "ty": "service", "line": "EuroCDP", "t": "Arm Flexible Access available to EuroCDP start-ups: first commercial IP provider on the platform.", "u": "https://eurocdp.eu/news-updates/european-chip-innovators-gain-access-to-arm-ip-through-eurocdp/"},
+    {"d": "2026-09-20", "a": true, "line": "NanoIC", "t": "High-NA EUV tool described as nearing completion.", "u": "https://www.linkedin.com/company/nanoic-pilot-line/posts/", "ty": "milestone", "c": ["pl"]},
+    {"d": "2026-09-20", "a": true, "c": ["cdp"], "ty": "service", "line": "EuroCDP", "t": "Cadence joins the EDA portfolio: full tool portfolio and cloud infrastructure at affordable terms for early-stage start-ups.", "u": "https://www.linkedin.com/company/eurocdp/posts/"},
+    {"d": "2026-09-16", "a": false, "line": "All five + EuroCDP", "t": "Flanders Semiconductor Forum, organised by the competence centre FC3: all five lines and the design platform present services and access in one day.", "u": "https://www.linkedin.com/company/pixeurope/posts/", "ty": "event", "c": ["pl", "ccc", "cdp"]},
+    {"d": "2026-09-14", "a": false, "line": "WBG", "t": "E-MRS Fall Meeting, Warsaw: dedicated session and booth; no access news.", "u": "https://www.linkedin.com/company/wbg-pilot-line/posts/", "ty": "event", "c": ["pl"]},
+    {"d": "2026-09-13", "a": true, "line": "CHAMP-ION", "t": "Website champ-ion.eu goes live.", "u": "https://www.linkedin.com/company/champ-ion/posts/", "ty": "milestone", "c": ["pl"]},
+    {"d": "2026-09-10", "a": false, "line": "All five + Chips JU", "t": "IEEE ESTC, Helsinki: special session on the status of the first five lines and plans for the next 12 months.", "u": "https://www.linkedin.com/company/pixeurope/posts/", "ty": "roadmap", "c": ["pl"]},
+    {"d": "2026-09-10", "a": false, "c": ["cdp"], "ty": "service", "line": "EuroCDP", "t": "Keysight EDA software and training added through an agreement with the Chips JU.", "u": "https://www.keysight.com/us/en/about/newsroom/catalog/news-release.2026.0910_pr26-094-keysight-eda-software-expands-access-for-european-chip-startups.html"},
+    {"d": "2026-09-10", "a": false, "c": ["ccc"], "ty": "event", "line": "HCCC", "t": "Greek centre leads a semiconductor business delegation to Brussels and imec Leuven.", "u": "https://hccc.org.gr/"},
+    {"d": "2026-09-07", "a": false, "line": "FAMES + NanoIC", "t": "ESSERC, Palma: strong academic interest in open access and PDKs.", "u": "https://www.linkedin.com/company/fames-pilot-line/posts/", "ty": "event", "c": ["pl"]},
+    {"d": "2026-06-09", "a": false, "line": "WBG + IPCEI AST", "t": "VDI/VDE panel 'IPCEI AST meets the Chips JU Pilot Lines' on cooperation between lines and IPCEI AST companies.", "u": "https://www.linkedin.com/company/wbg-pilot-line/posts/", "ty": "event", "c": ["pl"]}
+  ],
+  "events": [
+    {"d": "2026-10-05", "when": "5 Oct 2026, 15:30–17:30 CEST", "what": "Chips JU consultation for Work Programme 2027: EU material and equipment qualification on pilot lines (online)", "why": "Shapes future pilot-line call topics", "u": "https://www.linkedin.com/company/chips-ju/posts/", "c": ["pl"]},
+    {"d": "2026-10-07", "when": "7–8 Oct 2026", "what": "APECS roadshow, Graz and Klagenfurt, with Silicon Alps and AT-C³", "why": "Meet the APECS one-stop-shop", "u": "https://www.apecs.eu/en/access/roadshows.html", "c": ["pl"]},
+    {"d": "2026-10-07", "c": ["ccc"], "when": "7–9 Oct 2026", "what": "Mission to Austria's semiconductor ecosystem (ChipNL CC with Silicon Alps)", "why": "Cross-centre cooperation", "u": "https://www.acccess.eu/events"},
+    {"d": "2026-10-08", "c": ["ccc"], "when": "8 Oct 2026", "what": "CADETTI Yearly Event, Rome, with an introduction to the aCCCess network", "why": "Italian design centre", "u": "https://www.acccess.eu/events"},
+    {"d": "2026-10-12", "when": "12 Oct 2026, 13:00–16:00 CET", "what": "Webinar 'Your Gateway to European Semiconductor Technologies' (CSC, SK Chips, CC Chip.si with PIXEurope, NanoIC, EuroCDP)", "why": "Three competence centres with two lines and the design platform", "u": "https://www.acccess.eu/events/your-gateway-to-european-semiconductor-technologies-cccs-pilot-lines-eurocdp", "c": ["ccc", "pl", "cdp"]},
+    {"d": "2026-10-12", "c": ["ccc"], "when": "12–13 Oct 2026", "what": "ChipNL CC mission to Flanders (imec, Soitec)", "why": "Cross-centre cooperation", "u": "https://cccnl.nl/en"},
+    {"d": "2026-10-13", "c": ["ccc", "pl"], "when": "13 Oct 2026", "what": "SCCC webinar on the 2D pilot line", "why": "Centre presents a pilot line", "u": "https://sccc.se/"},
+    {"d": "2026-10-15", "c": ["ccc"], "when": "15 Oct 2026", "what": "Advanced Packaging Workshop, Dublin (MIDAS / I-C3)", "why": "Packaging skills", "u": "https://ic3.ie/"},
+    {"d": "2026-10-16", "c": ["ccc"], "when": "16–18 Oct 2026", "what": "Chipathon, Riga (LCCC)", "why": "Design talent", "u": "https://latvianccc.lv/en"},
+    {"d": "2026-10-21", "c": ["acc"], "when": "21–22 Oct 2026", "what": "Chips Venture Forum selection, Palais de la Bourse, Bordeaux (aCCCess with Blumorpho, the Commission, EIC and EuroCDP): 62 start-ups, 36 pitches in 12 market panels, investor one-to-ones; INPHO Venture Summit follows on 22–23 Oct", "why": "Investor matchmaking for start-ups nominated by the centres", "u": "https://www.acccess.eu/chips-venture-forum/2026-programme"},
+    {"d": "2026-10-27", "c": ["acc", "ccc"], "when": "27 Oct 2026, 10:00 CET", "what": "aCCCess Training Offers #2: PIXSpain and POEMS", "why": "Training offers across centres", "u": "https://www.acccess.eu/events"},
+    {"d": "2026-10-29", "when": "29 Oct 2026", "what": "aCCCess Technology Offers #4: PIXEurope with PIXSpain", "why": "Line paired with a competence centre", "u": "https://www.acccess.eu/events/acccess-webinar-on-technology-offers-4", "c": ["acc", "ccc", "pl"]},
+    {"d": "2026-11-01", "when": "Nov 2026", "what": "PIXEurope opens existing partner infrastructure", "why": "First hardware access for photonics", "u": "https://pixeurope.eu/open-access/", "c": ["pl"]},
+    {"d": "2026-11-10", "when": "10–13 Nov 2026", "what": "SEMICON Europa, Munich: Chips JU booth C2311 with all five lines, aCCCess and EuroCDP", "why": "Every line in one place", "u": "https://www.linkedin.com/company/chips-ju/posts/", "c": ["pl", "cdp", "ccc", "acc"]},
+    {"d": "2026-11-11", "c": ["acc"], "when": "11 Nov 2026", "what": "Chips Venture Forum final and CVF Award, Messe München, during SEMICON Europa: 21 start-ups in four pitch sessions", "why": "Start-up funding; follows the 2025 edition (18 start-ups, €50M+ in deals negotiated, per the organisers)", "u": "https://www.acccess.eu/chips-venture-forum/2026-programme"},
+    {"d": "2026-11-16", "c": ["cdp"], "when": "Nov 2026, Malta", "what": "EuroCDP Venture Development Programme finale (cohort 1)", "why": "First 20 start-ups complete the programme", "u": "https://eurocdp.eu/startup-programme/"},
+    {"d": "2026-11-17", "when": "17 Nov 2026", "what": "Deadline EuroHPC QEXP-14 (€15M), bridge to the quantum pilot lines", "why": "Quantum funding", "u": "https://www.eurohpc-ju.europa.eu/quantum-experimental-pilot-lines-quantum-technologies_en", "c": ["pl"]},
+    {"d": "2026-11-17", "c": ["cdp"], "when": "17–18 Nov 2026", "what": "EuroCDP course: analog IC design with open-source tools, INL Braga (€150)", "why": "Design skills", "u": "https://eurocdp.eu/training/"},
+    {"d": "2026-11-25", "when": "25–27 Nov 2026", "what": "NanoIC Student Excellence Day and Winter School on Embedded Memories, imec Leuven (free for students)", "why": "Skills", "u": "https://www.linkedin.com/company/nanoic-pilot-line/posts/", "c": ["pl"]},
+    {"d": "2026-12-01", "when": "1 Dec 2026 – 31 Mar 2027 (to be confirmed)", "what": "Chips JU calls Quantum Chips Design and Quantum Enabling Technologies", "why": "Require access arrangements with a pilot line", "u": "https://qt.eu/funding-opportunities/", "c": ["pl"]},
+    {"d": "2026-12-02", "when": "2–3 Dec 2026", "what": "EFECS 2026, Helsinki (Chips JU)", "why": "Meet lines and Chips JU", "u": "https://efecs.eu/", "c": ["pl", "cdp", "ccc"]},
+    {"d": "2026-12-07", "c": ["cdp"], "when": "7–9 Dec 2026", "what": "EuroCDP course: high-level synthesis with Siemens Catapult, Tampere (€250)", "why": "Design skills", "u": "https://eurocdp.eu/training/"},
+    {"d": "2026-12-09", "c": ["ccc"], "when": "9–11 Dec 2026", "what": "CHIPNATION and first Iberian Semiconductor Summit, Barcelona", "why": "Iberian network of centres", "u": "https://www.acccess.eu/events"},
+    {"d": "2026-12-14", "c": ["cdp"], "when": "14 Dec 2026", "what": "EuroCDP webinar on market entry strategy", "why": "Start-up support", "u": "https://eurocdp.eu/training/"},
+    {"d": "2027-01-25", "when": "25–29 Jan 2027", "what": "European FD-SOI Design School, Grenoble (FAMES)", "why": "Skills", "u": "https://www.linkedin.com/company/fames-pilot-line/posts/", "c": ["pl"]},
+    {"d": "2027-03-01", "when": "Mar–May 2027", "what": "FAMES annual open access call", "why": "Main window for new FAMES projects", "u": "https://fames-pilot-line.eu/open-access/", "c": ["pl"]}
+  ],
+  "models": [
+    {"cc": "SCCC + Vinnova", "ctry": "SE", "model": "Funds access fees", "what": "SMEs get up to SEK 3.5M per project for pilot-line access fees, conditional on an access certificate from the line (Feb 2026 – Jul 2027).", "u": "https://www.vinnova.se/en/calls-for-proposals/chips-ju/chips-ju-testing-and-validation-of-new-2025-04692/"},
+    {"cc": "FC3", "ctry": "BE", "model": "All-lines forum", "what": "Flanders Semiconductor Forum, 16 Sep 2026: all five lines and EuroCDP present services and access in one free day.", "u": "https://fc3.be/fsf2026/"},
+    {"cc": "PIXSpain", "ctry": "ES", "model": "Joint training", "what": "Training with PIXEurope alongside ECOC 2026; paired aCCCess webinar 29 Oct.", "u": "https://www.linkedin.com/company/pixeurope/posts/"},
+    {"cc": "ChipNL", "ctry": "NL", "model": "Guided applications", "what": "Guides companies through pilot-line and design-platform applications; Dutch contact point for APECS.", "u": "https://cccnl.nl/en/pilot-lines"},
+    {"cc": "G3C", "ctry": "DE", "model": "Free navigation", "what": "Run by FMD, which also operates the APECS one-stop-shop; free first consultation and facilitated access.", "u": "https://www.german-chips.de/en/about-us.html"},
+    {"cc": "AT-C³", "ctry": "AT", "model": "Co-hosted roadshow", "what": "Co-hosts the APECS roadshow in Graz and Klagenfurt; services free or reduced for SMEs, published price lists.", "u": "https://www.apecs.eu/en/access/roadshows.html"},
+    {"cc": "ASTEERICS", "ctry": "FR", "model": "Training + priority access", "what": "Free training offer; joint aCCCess webinar with FAMES, Jul 2026.", "u": "https://www.acccess.eu/news"}
+  ],
+  "legal": [
+    "Regulation (EU) 2023/1781, recital 29: competence centres facilitate access to pilot lines and the design platform and act as an access point to the network.",
+    "Recital 18: access on a transparent, non-discriminatory basis; large companies pay market or cost-plus prices; SMEs and academia get preferential access or reduced prices.",
+    "Chips JU Work Programme (decision GB 2023.51): pilot lines must facilitate collaboration with competence centres; PDKs must be available through the European design platform.",
+    "Chips Act 2.0 proposal COM(2026) 504: pilot lines continue; at least one competence centre per Member State provides access to design and pilot-line facilities."
+  ],
+  "sources": [
+    ["CORDIS project pages (FAMES, NanoIC, APECS, WBG, PIXEurope, CHAMP-ION, SUPREME, P4Q, Q-PLANET, DIREQT)", "https://cordis.europa.eu/"],
+    ["European Commission: FAMES inauguration, 30 Jan 2026", "https://digital-strategy.ec.europa.eu/en/news/fames-pilot-line-inaugurated-advance-ultra-low-power-semiconductors-europe"],
+    ["NanoIC access and PDKs", "https://www.nanoic-project.eu/en/access"],
+    ["Chips JU: APECS Open Access Call", "https://www.chips-ju.europa.eu/NewsDetails/?id=a262f8c6-c738-f111-88b5-000d3a27d474"],
+    ["imec: PIXEurope launch, 4 Jun 2026", "https://www.imec-int.com/en/press/europes-bid-leadership-photonic-chips-begins-barcelona"],
+    ["Fraunhofer IISB: WBG consortium meeting, Jun 2026", "https://www.iisb.fraunhofer.de/de/press_media/pressemitteilungen/pressearchiv/archiv_2026/wbg-treffen-06-2026.html"],
+    ["champ-ion.eu", "https://champ-ion.eu/"],
+    ["Chips JU Work Programme appendix (pilot-line access conditions)", "https://www.chips-ju.europa.eu/Appendix2_2023I_Initiatives.pdf"],
+    ["aCCCess news and events", "https://www.acccess.eu/news"],
+    ["Pilot-line LinkedIn company pages (see each card)", "https://www.linkedin.com/company/chips-ju/"],
+    ["aCCCess network of competence centres", "https://www.acccess.eu/network"],
+    ["Chips JU Annual Activity Report: competence centres", "https://aar2024.chips-ju.europa.eu/annual-report/competence-centres"],
+    ["EuroCDP services and start-up programme", "https://eurocdp.eu/services/"],
+    ["Siemens: EDA framework agreement with Chips JU, 12 May 2026", "https://news.siemens.com/en-us/siemens-chipju-software-framework/"],
+    ["EuroCDP: Arm IP access, 21 Sep 2026", "https://eurocdp.eu/news-updates/european-chip-innovators-gain-access-to-arm-ip-through-eurocdp/"],
+    ["EuroCDP: first start-up cohort, 4 Jun 2026", "https://eurocdp.eu/news-updates/eurocdp-announces-first-cohort-of-companies-for-venture-development-programs/"],
+    ["EuroCDP LinkedIn", "https://www.linkedin.com/company/eurocdp/"],
+    ["aCCCess: Chips Venture Forum 2026 programme", "https://www.acccess.eu/chips-venture-forum/2026-programme"],
+    ["aCCCess: Chips Venture Forum 2026 selected companies", "https://www.acccess.eu/chips-venture-forum/2026-companies"],
+    ["aCCCess: Chips Venture Forum 2025 results", "https://www.acccess.eu/chips-venture-forum/2025"],
+    ["European Commission: Chips Venture Forum at SEMICON Europa 2025", "https://digital-strategy.ec.europa.eu/en/news/chips-venture-forum-connects-european-semiconductor-start-ups-and-investors-semicon-europa-2025"],
+    ["Blumorpho: Chips Venture Forum and INPHO Venture Summit", "https://www.blumorpho.com/chips-venture-forum/"],
+    ["Blumorpho on LinkedIn: Chips Venture Forum selection and INPHO Venture Summit, Bordeaux", "https://www.linkedin.com/company/blumorpho/posts/"],
+    ["aCCCess training catalogue", "https://www.acccess.eu/trainings"],
+    ["aCCCess network", "https://www.acccess.eu/network"],
+    ["aCCCess open calls", "https://www.acccess.eu/open-calls"],
+    ["aCCCess events", "https://www.acccess.eu/events"],
+    ["aCCCess survey of the competence centres (25 answers, Feb–May 2026; internal)", ""],
+    ["HCHiP project page (budget example)", "https://www.mfa.kfki.hu/kutatas/projektek/hchip/"]
+  ],
+  "method": "Compiled from the pilot lines', EuroCDP's and competence centres' websites and LinkedIn company pages, aCCCess (including its survey of the centres), CORDIS, the Chips JU and partner press releases. Each weekly edition adds new items and changes only the facts they affect. Dates marked ≈ are derived from the relative age of a post.",
+  "newsTypes": [
+    {"id": "roadmap", "name": "Roadmap", "desc": "Published plans, infrastructure schedules, access dates"},
+    {"id": "service", "name": "New service", "desc": "New PDK, platform, service line or access route"},
+    {"id": "event", "name": "Event", "desc": "Conferences, roadshows, trainings, webinars"},
+    {"id": "milestone", "name": "Milestone", "desc": "Inaugurations, first users, tools installed, launches"}
+  ],
+  "components": [
+    {"id": "pl", "name": "Pilot lines", "color": "var(--c-pl)"},
+    {"id": "cdp", "name": "Design platform", "color": "var(--c-cdp)"},
+    {"id": "ccc", "name": "Competence centres", "color": "var(--c-ccc)"},
+    {"id": "acc", "name": "aCCCess network", "color": "var(--c-acc)"}
+  ],
+  "overview": {"stats": [{"c": "pl", "v": "11", "l": "pilot lines", "s": "5 semiconductor, 6 quantum"}, {"c": "pl", "v": "4", "l": "take external users", "s": "FAMES, APECS open access; NanoIC, PIXEurope early access"}, {"c": "cdp", "v": "4", "l": "vendor agreements", "s": "Siemens EDA, Keysight, Cadence, Arm IP"}, {"c": "cdp", "v": "20", "l": "start-ups in cohort 1", "s": "of 79 applicants; second call 2027"}, {"c": "ccc", "v": "30", "l": "competence centres", "s": "in 28 countries (EU-27 + Norway)"}, {"c": "ccc", "v": "8 / 14", "l": "centres offering / wanting packaging", "s": "the widest gap in the network survey"}, {"c": "acc", "v": "62", "l": "start-ups at the Chips Venture Forum", "s": "Bordeaux 21–22 Oct, final at SEMICON Europa 11 Nov"}, {"c": "acc", "v": "64", "l": "courses in the network catalogue", "s": "from 10 centres and FAMES"}], "status": [{"c": "pl", "head": "Pilot lines", "state": "Opening up", "text": "FAMES and APECS run open access; NanoIC offers PDKs and PIXEurope consulting, training and prototyping. WBG is preparing access; the six quantum lines started in 2026 and open from 2027.", "go": "pilotlines"}, {"c": "cdp", "head": "Design platform (EuroCDP)", "state": "Services rolling out", "text": "Training, EDA and IP access and the start-up programme are running. The central cloud and pilot-line PDKs are due from end 2026.", "go": "platform"}, {"c": "ccc", "head": "Competence centres", "state": "Network complete", "text": "All 30 centres are launched or starting. Design is covered almost everywhere; packaging, quantum and new wide-bandgap materials are offered by few centres but wanted by many.", "go": "centres"}, {"c": "acc", "head": "aCCCess network action", "state": "Results flowing", "text": "A shared training catalogue (64 courses), webinar series that pair pilot lines with centres, an AI technology advisor and the Chips Venture Forum, which brings 62 start-ups to investors this autumn.", "go": "acc", "btn": "Open aCCCess"}], "next": [{"d": "2026-10", "when": "21–22 Oct 2026", "c": "acc", "t": "Chips Venture Forum selection, Bordeaux: 62 start-ups meet investors"}, {"d": "2026-11", "when": "Nov 2026", "c": "pl", "t": "PIXEurope opens existing partner infrastructure"}, {"d": "2026-11", "when": "Nov 2026", "c": "cdp", "t": "EuroCDP start-up programme finale (cohort 1), Malta"}, {"d": "2026-11", "when": "11 Nov 2026", "c": "acc", "t": "Chips Venture Forum final and CVF Award at SEMICON Europa, Munich (21 start-ups)"}, {"d": "2026-12", "when": "Q4 2026", "c": "cdp", "t": "EDA negotiations to conclude; 2026 DET call results"}, {"d": "2026-12", "when": "Q4 2026", "c": "pl", "t": "NanoIC High-NA EUV qualification; FAMES RF filter and PCM switch PDKs"}, {"d": "2026-12", "when": "End 2026", "c": "cdp", "t": "First full-scale EuroCDP cloud facilities operational"}, {"d": "2027-03", "when": "Mar–May 2027", "c": "pl", "t": "FAMES annual open access call"}, {"d": "2027-05", "when": "May 2027", "c": "pl", "t": "PIXEurope: ≥50% of new equipment accepted"}, {"d": "2027-06", "when": "2027", "c": "pl", "t": "SUPREME opens to external users"}, {"d": "2027-06", "when": "2027", "c": "cdp", "t": "EuroCDP Venture Development Programme, second call"}, {"d": "2028-02", "when": "Early 2028", "c": "pl", "t": "CHAMP-ION initial access; NanoIC hardware prototyping from 2028"}, {"d": "2028-09", "when": "Sep 2028", "c": "pl", "t": "PIXEurope fully equipped, MPW available"}, {"d": "2028-12", "when": "End 2028", "c": "cdp", "t": "EuroCDP grant ends; continuation proposed under Chips Act 2.0"}]},
+  "cdp": {"facts": [["Coordinator", "imec (BE); general manager Romano Hoofman"], ["Consortium", "12 partners: imec, CEA, Fraunhofer, IHP, Silicon Austria Labs, Fondazione Chips-IT, CSIC, INL, TU/e, Tampere University, CTU Prague, AGH Kraków"], ["Budget and term", "About €25M, Digital Europe grant 101218811, 2025 to end 2028"], ["Structure", "Platform Coordination Team for the central cloud, vendor agreements and user support, with a distributed network of Design Enablement Teams (DETs)"], ["Users", "Start-ups and SMEs first; academia is served by the separate Europractice 2.0 project"]], "services": [{"s": "Training", "st": "live", "n": "Courses such as analog IC design with open-source tools and high-level synthesis with Siemens Catapult"}, {"s": "EDA tool access", "st": "live", "n": "Framework agreements with Siemens EDA (May 2026), Keysight (Sep 2026) and Cadence (Sep 2026); no Synopsys announcement yet"}, {"s": "IP access", "st": "live", "n": "Arm Flexible Access for start-ups (21 Sep 2026), the first commercial IP provider"}, {"s": "Venture Development Programme", "st": "live", "n": "Incubate and Accelerate tracks, no equity taken; cohort 1 of 20 companies; second call 2027"}, {"s": "Design Enablement Teams", "st": "live", "n": "Nine DETs selected in 2025; MPW access runs through DETs such as IC-DASH"}, {"s": "Open-source EDA", "st": "building", "n": "Gap analysis (Jul 2026), GitHub organisation; three ODE4EC projects started Jun 2026 (€20M call)"}, {"s": "Central cloud design environment", "st": "building", "n": "Contractor selected; open-source test environment on request; first full-scale facilities by end 2026"}, {"s": "Pilot-line and foundry PDKs on the platform", "st": "planned", "n": "Planned under Chips Act 2.0; NanoIC and FAMES PDKs are available directly from the lines meanwhile"}], "agreements": [{"d": "2026-05-12", "a": false, "who": "Siemens EDA", "k": "EDA", "n": "First EDA provider; pre-defined pricing"}, {"d": "2026-09-10", "a": false, "who": "Keysight", "k": "EDA", "n": "RF/microwave, EM, high-speed digital, device modelling, training"}, {"d": "2026-09-20", "a": true, "who": "Cadence", "k": "EDA", "n": "Complete portfolio and cloud infrastructure for early-stage start-ups"}, {"d": "2026-09-21", "a": false, "who": "Arm", "k": "IP", "n": "Flexible Access, Flexible Access for Startups, Academic Access"}], "cohort": {"accelerate": ["Qblox", "Vertical Compute", "Eye4Nir", "ExpectedIT", "Nellow", "Imperative Semiconductor", "RandomPower", "Last Mile Semiconductor", "Akronic", "S-Sentia"], "incubate": ["Polski Krzem", "SIOPT", "PulpoSemi", "SemiQa", "IC Waves", "Lobster Robotics", "Wiresans", "Automaton Engine", "Lorentis Micro", "FrostByte"], "note": "79 applicants, 20 selected (4 Jun 2026). Kick-off Amsterdam (Jun), Accelerate bootcamp Kraków (22–25 Sep), finale Malta (Nov). Incubate and Accelerate tracks; EuroCDP takes no equity.", "cross": "Four cohort-1 start-ups were also selected for the aCCCess Chips Venture Forum 2026; see the aCCCess tab."}, "dets": [{"n": "IC-DASH", "h": "CEA-led consortium (FR), with Siemens EDA, SiPearl, IC'Alps and others", "f": "Advanced SOI, MPW", "u": "https://ic-dash.eu/"}, {"n": "VUO-IC", "h": "Tampere University with CoreHW, VLSI Solution, VTT, Chip Fusion (FI)", "f": "Digital SoC, RF, mmWave, photonics, cryo-CMOS", "u": ""}, {"n": "CHIPSIDEA", "h": "Silicon Austria Labs with ParityQC (AT)", "f": "mmWave, 5G/6G, mixed-signal", "u": "https://www.bmimi.gv.at/en/service/press/releases/2025/1208_sal.html"}, {"n": "DreamCloud", "h": "Dream Chip Technologies (DE)", "f": "ASIC and SoC", "u": "https://www.dreamchip.de/"}, {"n": "makeChip", "h": "Racyics (DE)", "f": "GlobalFoundries 22FDX", "u": ""}, {"n": "Photonics DET", "h": "Eindhoven, probably JePPIX (NL)", "f": "InP photonics", "u": ""}, {"n": "Three further DETs", "h": "Not publicly identified", "f": "—", "u": ""}], "roadmap": [["Autumn 2026", "EDA negotiations to conclude"], ["Q4 2026", "Results of the 2026 DET call (about 10 teams)"], ["Nov 2026", "Start-up programme finale, Malta"], ["End 2026", "First full-scale cloud facilities operational"], ["2027", "Second Venture Development Programme call"], ["End 2028", "Grant ends; Chips Act 2.0 proposes continuation with pilot-line PDKs integrated"]], "links": [["Website", "https://eurocdp.eu/"], ["Services", "https://eurocdp.eu/services/"], ["Start-up programme", "https://eurocdp.eu/startup-programme/"], ["LinkedIn", "https://www.linkedin.com/company/eurocdp/"]]},
+  "ccc": {"facts": [["Centres", "30 Chips Competence Centres in 28 countries: all 27 Member States plus Norway (Belgium and Spain have two each)"], ["Funding", "First call DIGITAL-Chips-2024-SG-CCC-1 (€116M max JU, 27 centres); second call 2025 for Cyprus, Italy, Luxembourg; up to 50% EU, rest national; 4 years"], ["Network", "European Network of Chips Competence Centres (ENCCC), coordinated by the aCCCess action (see the aCCCess tab)"], ["Countries without a centre", "Iceland (eligible) and Liechtenstein"]], "activities": [{"d": "2026-01-12", "t": "Nordic-Baltic MoU: FI, SE, NO, DK, EE, LV, LT centres"}, {"d": "2026-06-23", "t": "Iberian network: POEMS, MicroNanoSpain, PIXSpain"}, {"d": "2025-10-08", "t": "Declaration of Graz (MoU): AT-C³, SCCC, CSC, ASTEERICS and ChipNL CC with aCCCess and the clusters Silicon Alps and CNSC. Focus: thin films, advanced materials, quantum and photonics; runs to end 2028."}, {"d": "2025-11-14", "t": "Declaration of Bratislava (MoU): SK Chips and CSC with aCCCess and CNSC, signed at the SK Chips opening. Focus: power electronics and modules, design and packaging, Edge AI; runs to end 2028."}], "tags": ["design", "photonics", "quantum", "power", "packaging", "manufacturing", "training", "startups"], "centres": [{"short": "ASTEERICS", "name": "French Competence Centre for Microelectronics", "ctry": "FR", "host": "Minalogic with French clusters", "web": "https://asteerics.com/", "li": "https://www.linkedin.com/company/asteerics-project/", "spec": "Training, MPW, prototyping (IC, photonics, 3D, MEMS, NVM), business support", "start": "Launched 28 Jan 2026", "latest": "GaN/SiC course 20 Oct", "tags": ["design", "photonics", "packaging", "training"]}, {"short": "AT-C³", "name": "Austrian Chips Competence Center", "ctry": "AT", "host": "Silicon Alps with AIT, MCL, PCCL, SAL, TU Graz", "web": "https://www.atc3.at/", "li": "", "spec": "Design and prototyping, materials, quantum, photonics, AMS, power, packaging", "start": "Kick-off 22 Jan 2025", "latest": "Co-hosts APECS roadshow 7–8 Oct", "tags": ["design", "quantum", "photonics", "power", "packaging"]}, {"short": "C3BG", "name": "Chips Competence Centre Bulgaria", "ctry": "BG", "host": "TU Sofia with Sofia University, Sofia Tech Park, ISSP-BAS", "web": "https://microelectronics.bg/", "li": "", "spec": "IC design and failure analysis, MEMS, materials, packaging", "start": "Launched 26 Jan 2026", "latest": "Website in preparation", "tags": ["design", "packaging"]}, {"short": "CADETTI", "name": "Competence Centre for Access to Design Technologies and Training in Italy", "ctry": "IT", "host": "Fondazione Chips-IT", "web": "https://www.acccess.eu/network", "li": "", "spec": "IC design (RF to THz, AMS, digital/RISC-V); power and packaging from 2026", "start": "Info day 23 Feb 2026", "latest": "Yearly Event, Rome, 8 Oct", "tags": ["design"]}, {"short": "CC Chip.si", "name": "Slovenian Chips Competence Centre", "ctry": "SI", "host": "University of Ljubljana with UM, UNG, JSI", "web": "https://cc-chip.si/", "li": "https://www.linkedin.com/company/cc-chips-si/", "spec": "Niche ASICs, photonic and quantum chips", "start": "Launched 4 Sep 2025", "latest": "Training Offers #1 (22 Sep); joint webinar with pilot lines 12 Oct", "tags": ["design", "photonics", "quantum", "training"]}, {"short": "CC-NorChip", "name": "Norwegian Chips Competence Centre", "ctry": "NO", "host": "SINTEF, NTNU, UiO, USN, UiT, Electronic Coast", "web": "https://ccnorchip.no/", "li": "", "spec": "Design, materials, microfabrication, packaging; free SME advisory", "start": "Launched 13 Nov 2025", "latest": "Nordic Chip Collaboration Meetup with EuroCDP (Sep)", "tags": ["design", "manufacturing", "packaging"]}, {"short": "ChipNL CC", "name": "ChipNL Competence Centre", "ctry": "NL", "host": "Consortium incl. Brainport Development, High Tech NL, imec NL, TNO, JePPIX", "web": "https://cccnl.nl/en", "li": "https://www.linkedin.com/company/chipnl-competence-centre/", "spec": "Equipment, design, heterogeneous integration, photonics, quantum, talent", "start": "Launched 29 Oct 2025", "latest": "Missions to Austria (7–9 Oct) and Flanders (12–13 Oct)", "tags": ["design", "photonics", "quantum", "packaging", "training"]}, {"short": "ChipsC²-LT", "name": "Lithuanian Chips Competence Centre", "ctry": "LT", "host": "FTMC with VU, VILNIUS TECH, KTU", "web": "https://chipsc2.lt/", "li": "", "spec": "Design, power, heterogeneous integration, PICs, THz, wide-bandgap, laser processing", "start": "—", "latest": "Chips Act 2.0 proposals to the Commission (29 Sep)", "tags": ["design", "power", "photonics"]}, {"short": "ChipsWIN", "name": "Chips Wallonia Innovation Network", "ctry": "BE", "host": "UCLouvain, Imagine Microelectronics, IGNITY", "web": "https://chipswin.eu/", "li": "", "spec": "Start-up and SME support, CMOS/SOI/MEMS/packaging training, cleanroom access", "start": "Launched 9 Dec 2025", "latest": "—", "tags": ["startups", "training", "manufacturing"]}, {"short": "CROCCS", "name": "Croatian Competence Centre for Semiconductors", "ctry": "HR", "host": "University of Zagreb FER", "web": "https://croccs.fer.hr/", "li": "https://www.linkedin.com/company/croccs", "spec": "IC-design training, demonstrators, test and characterisation", "start": "—", "latest": "New clean room (Sep)", "tags": ["design", "training"]}, {"short": "CSC", "name": "Czech Semiconductor Centre", "ctry": "CZ", "host": "Brno University of Technology with CTU, CNSC, Codasip, JIC, onsemi", "web": "https://czechsemiconductorcentre.cz/", "li": "https://www.linkedin.com/company/czech-semiconductor-centre", "spec": "Design and manufacturing expertise, pilot-line access, SiC/wide-bandgap, RISC-V/EDA, metrology", "start": "Launched 7 Apr 2025", "latest": "Pilot IP Block Catalogue with 4 centres (25 Sep); webinar with pilot lines and EuroCDP 12 Oct", "tags": ["design", "power", "training"]}, {"short": "Cy3C", "name": "Cyprus Chips Competence Centre", "ctry": "CY", "host": "—", "web": "https://www.acccess.eu/network", "li": "", "spec": "Selected in the 2025 second call", "start": "2025–26", "latest": "—", "tags": []}, {"short": "DKCCC", "name": "Danish Chips Competence Centre", "ctry": "DK", "host": "DTU with SDU, KU, AAU, DI, DFM", "web": "https://dkccc.eu/en", "li": "https://www.linkedin.com/company/dkccc/", "spec": "Chip design and fabrication, quantum chips; 40-hour feasibility studies", "start": "Inaugurated Feb 2025", "latest": "Nordic Chip Collaboration Meetup with EuroCDP (Sep)", "tags": ["design", "quantum", "manufacturing"]}, {"short": "FC3", "name": "Flanders Chips Competence Center", "ctry": "BE", "host": "KU Leuven, UGent, VUB, UAntwerp", "web": "https://fc3.be/", "li": "", "spec": "Design and system integration, electronics and photonics demonstrators, training", "start": "Launched May 2025", "latest": "Flanders Semiconductor Forum with all five pilot lines and EuroCDP (16 Sep)", "tags": ["design", "photonics", "training"]}, {"short": "FiCCC", "name": "Finnish Chips Competence Centre", "ctry": "FI", "host": "Tamlink", "web": "https://www.ficcc.eu/", "li": "https://www.linkedin.com/company/ficcc/", "spec": "SoC design, quantum, wide-bandgap, advisory, ChipStart EU", "start": "—", "latest": "Start-up mentoring pilot (22 Sep)", "tags": ["design", "quantum", "power", "startups"]}, {"short": "G3C", "name": "German Chips Competence Centre", "ctry": "DE", "host": "Research Fab Microelectronics Germany (FMD)", "web": "https://www.german-chips.de/en/", "li": "https://www.linkedin.com/company/german-chips-competence-centre-g3c/", "spec": "Chip and chiplet design, heterogeneous integration, 2.5D/3D, process, packaging", "start": "Launched 28 Oct 2025", "latest": "FIRST by FMD, Berlin (30 Sep – 1 Oct)", "tags": ["design", "packaging", "manufacturing"]}, {"short": "HCCC", "name": "Hellenic Chips Competence Centre", "ctry": "GR", "host": "HETiA with Demokritos, FORTH, CERTH and 12 universities", "web": "https://hccc.org.gr/", "li": "https://www.linkedin.com/company/hellenic-chips-cc", "spec": "Design and fab training, EDA, ASIC/FPGA, HPC for design", "start": "Launched Jun 2025", "latest": "Delegation to Brussels and imec (10–11 Sep)", "tags": ["design", "training"]}, {"short": "HCHiP", "name": "Hungarian Centre for Heterogeneous Integration and Packaging", "ctry": "HU", "host": "Bay Zoltán with BME and HUN-REN EK", "web": "https://hchip.hu/", "li": "", "spec": "Heterogeneous integration and packaging, micro-credentials", "start": "Kick-off 24 Nov 2025", "latest": "—", "tags": ["packaging", "training"]}, {"short": "I-C3", "name": "Ireland's Chips Competence Centre", "ctry": "IE", "host": "Tyndall with MCCI, MIDAS, NovaUCD, UCD", "web": "https://ic3.ie/", "li": "", "spec": "Design-platform and pilot-line access, funding, founder training", "start": "Launched 17 Feb 2026", "latest": "Advanced Packaging Workshop, Dublin 15 Oct", "tags": ["packaging", "photonics", "startups"]}, {"short": "InnoSemi", "name": "Polish Semiconductor Competence Centre", "ctry": "PL", "host": "Łukasiewicz–IMiF with KIGEiT and partners", "web": "https://www.acccess.eu/network", "li": "", "spec": "Custom semiconductor solutions, sensors, automotive, hardware security", "start": "—", "latest": "—", "tags": ["design"]}, {"short": "KIIP", "name": "Knowledge and Innovation in Integrated Processors", "ctry": "EE", "host": "EIS / Metrosert with TalTech", "web": "https://kiip.ee/", "li": "", "spec": "Digital and AMS design, RISC-V, open EDA, AI chips, hardware security", "start": "Launched 17 Apr 2025", "latest": "—", "tags": ["design"]}, {"short": "LCCC", "name": "Latvian Chip Competence Centre", "ctry": "LV", "host": "Riga Technical University with University of Latvia", "web": "https://latvianccc.lv/en", "li": "https://www.linkedin.com/showcase/latvian-chip-competence-centre/", "spec": "Microelectronics, silicon and polymer photonics, open-source design", "start": "—", "latest": "Chipathon, Riga 16–18 Oct", "tags": ["design", "photonics", "training"]}, {"short": "LU-CCC", "name": "Luxembourg Chips Competence Centre", "ctry": "LU", "host": "—", "web": "https://www.acccess.eu/network", "li": "", "spec": "Selected in the 2025 second call", "start": "2025–26", "latest": "—", "tags": []}, {"short": "MicroNanoSpain", "name": "MicroNanoSpain Competence Centre", "ctry": "ES", "host": "AESEMI with CSIC-CNM, BSC, UPC, UPV, UPM", "web": "https://micronanospain.org/", "li": "https://www.linkedin.com/company/micronanospain", "spec": "Micro and nanofabrication access, training", "start": "—", "latest": "CHIPNATION, Barcelona 9–11 Dec", "tags": ["manufacturing", "training"]}, {"short": "MSCC", "name": "Malta Semiconductor Competence Centre", "ctry": "MT", "host": "Malta Enterprise with Silicon Catalyst EU, UM, MCAST", "web": "https://mscc.com.mt/", "li": "", "spec": "Fabless incubation, heterogeneous integration and packaging, design skills", "start": "Launched 13 Sep 2025", "latest": "ChipStart EU cohort 2 open; GSCM Malta 16–17 Nov", "tags": ["startups", "design", "packaging"]}, {"short": "PIXSpain", "name": "Photonic Chips Spain Competence Centre", "ctry": "ES", "host": "UPV with CSIC-CNM, ICFO, UC3M, UVigo, UMA", "web": "https://pixspain.es/", "li": "", "spec": "Integrated photonics training, technology transfer, incubator", "start": "2026", "latest": "Training with PIXEurope at ECOC (23 Sep); two aCCCess webinars in Oct", "tags": ["photonics", "training", "startups"]}, {"short": "POEMS", "name": "Portuguese Competence Centre in Semiconductors", "ctry": "PT", "host": "INL with 16 partners", "web": "https://poemscentre.eu/en", "li": "", "spec": "Design, advanced packaging, PICs, microfluidics, flexible electronics", "start": "Kick-off Apr 2025", "latest": "Training Offers #2 (27 Oct)", "tags": ["design", "packaging", "photonics"]}, {"short": "RO-SMARTSYS", "name": "Romanian Competence Centre in Smart Systems", "ctry": "RO", "host": "IMT Bucharest with UNSTPB", "web": "https://ro-chips.ro/", "li": "https://www.linkedin.com/company/ro-chips/", "spec": "Smart sensors, robotics, micro and nano technologies, design", "start": "2025", "latest": "—", "tags": ["design", "manufacturing"]}, {"short": "SCCC", "name": "Swedish Chips Competence Centre", "ctry": "SE", "host": "Lund University with Chalmers Industriteknik and KTH", "web": "https://sccc.se/", "li": "https://www.linkedin.com/company/sccceu", "spec": "Design and production, power electronics, high frequency, advanced materials", "start": "Opened 22 Sep 2025", "latest": "Pilot-line webinars (WBG 23 Sep, 2D 13 Oct); national funding for access fees", "tags": ["design", "power"]}, {"short": "SK Chips CC", "name": "Slovak Chips Competence Centre", "ctry": "SK", "host": "Slovak Ministry of Education with STU FEI, ELU SAV, CVTI SR, EIA", "web": "https://www.skchipscompetencecentre.sk/", "li": "https://www.linkedin.com/company/slovak-chips-centre1", "spec": "Power semiconductors, packaging and back-end, EDA, education", "start": "Opened 17 Nov 2025", "latest": "ASDAM 7–9 Oct; joint webinar with pilot lines 12 Oct", "tags": ["power", "packaging", "design"]}]},
+  "feedback": {"banner": "Alpha version, open for feedback until 1 November 2026. Corrections are applied every week.", "intro": "This monitor is an independent ecosystem initiative that brings together, for the first time, the status of all three Pillar I components in one place. It reports what the initiatives publish. We ask the people who build, fund and use Pillar I to tell us what is wrong, what is missing and what would make it useful.", "questions": [["Accuracy", "Is your pilot line, platform or centre described correctly? What is missing or out of date?"], ["Readiness scale", "Do the four levels (open access running, early access, preparing access, ramp-up) describe pilot-line readiness well? Which criteria should define each level?"], ["Indicators", "Which two or three indicators would help you most? For example external users, access requests and lead times, published price conditions, pilot-line PDKs on EuroCDP, referrals from competence centres."], ["Data contribution", "Would you send a short monthly status line for your initiative?"], ["Usefulness", "Who in your organisation would use this, and for what? What would make you open it every week?"], ["Scope", "Should the next version add the Chips Fund, IPCEIs, Pillar II facilities or national programmes?"], ["Home", "Should the monitor stay independent, or be hosted or endorsed by the competence centre network or the Chips JU?"]], "contactNote": "Short answers are enough; a correction can be one line. Please mention which component or initiative you refer to.", "email": "cerny@semicz.eu"},
+  "acc": {"facts": [["Action", "aCCCess, the coordination and support action that builds the European Network of Chips Competence Centres (ENCCC) and links the centres with the pilot lines and the design platform"], ["Grant and term", "Digital Europe / Chips JU grant 101217840; March 2025 to February 2029"], ["Partners", "Coordinator Blumorpho; 7 core partners (Blumorpho, Czech National Semiconductor Cluster, Mesap, Minalogic, Silicon Alps, Silicon Saxony, VDI/VDE-IT) and 15 associated partners"], ["Focus groups", "FG1 Operations & best practices · FG2 Outreach & events · FG3 Common technology offers · FG4 Training & skills · FG5 Finance"]], "results": [{"r": "Training catalogue", "st": "live", "n": "64 courses from 10 centres and FAMES", "u": "https://www.acccess.eu/trainings"}, {"r": "Chips Venture Forum", "st": "live", "n": "2025: 18 of 87 applicants, €50M+ in deals negotiated (organisers); 2026: 62 selected, Bordeaux 21–22 Oct, final at SEMICON Europa 11 Nov", "u": "https://www.acccess.eu/chips-venture-forum"}, {"r": "Technology Offers webinars", "st": "live", "n": "Each session pairs a pilot line with a centre: APECS with ChipNL (May), FAMES with ASTEERICS and EuroCDP (Jul), PIXEurope with PIXSpain (29 Oct)", "u": "https://www.acccess.eu/events"}, {"r": "Training Offers webinars", "st": "live", "n": "ChipNL with CC Chip.si (22 Sep), PIXSpain with POEMS (27 Oct)", "u": "https://www.acccess.eu/news/webinar-series-on-semiconductor-training-offers1-149"}, {"r": "AI Technology Advisor (ChiCC)", "st": "live", "n": "Routes a user's request to the centres that work on a technology, ranked by focus, with a contact", "u": "https://www.acccess.eu/technologies"}, {"r": "Open-calls page", "st": "live", "n": "7 active calls from pilot lines, EuroCDP, centres, INFRACHIP and the Chips JU; budgets mostly not shown", "u": "https://www.acccess.eu/open-calls"}, {"r": "Network events calendar", "st": "live", "n": "17 upcoming events, Oct–Dec 2026", "u": "https://www.acccess.eu/events"}, {"r": "Survey of the centres", "st": "done", "n": "25 of 30 centres answered (Feb–May 2026); basis of the Complementarity tab", "u": ""}, {"r": "ENCCC Annual Meeting", "st": "done", "n": "First meeting 5 Feb 2026, Brussels: all 30 centres with the Chips JU, pilot lines and EuroCDP", "u": "https://www.acccess.eu/news"}, {"r": "Newsletter and Chips Think Tank", "st": "live", "n": "Newsletters #4 and #5 (spring 2026); Think Tank webinars on deep-tech investment", "u": "https://www.acccess.eu/news"}], "venture": {"total": "62", "summary": "start-ups selected for the aCCCess Chips Venture Forum 2026, the network's investor event run with the European Commission (DG CNECT) and the EIC and operated by Blumorpho. Start-ups apply through their national competence centre.", "overlapNote": "Four of them are also in the EuroCDP Venture Development Programme (cohort 1): FrostByte, IC Waves, Last Mile Semiconductor and Nellow. Vertical Compute, from that cohort, won the CVF Award 2025. The published list has 62 names; Blumorpho's LinkedIn post speaks of 60 companies meeting investors.", "programmes": [{"c": ["acc"], "p": "Chips Venture Forum 2026: selection", "by": "aCCCess, run by Blumorpho with the European Commission (DG CNECT), EIC and EuroCDP", "when": "21–22 Oct 2026, Palais de la Bourse, Bordeaux, before the INPHO Venture Summit (22–23 Oct)", "n": "62 selected for investor meetings; 36 pitch in 12 market panels", "u": "https://www.acccess.eu/chips-venture-forum/2026-programme"}, {"c": ["acc"], "p": "Chips Venture Forum 2026: final", "by": "aCCCess with the European Commission, EIC and EuroCDP", "when": "11 Nov 2026, Messe München, during SEMICON Europa", "n": "21 finalists in four pitch sessions; CVF Award", "u": "https://www.acccess.eu/chips-venture-forum/2026-programme"}, {"c": ["acc"], "p": "Chips Venture Forum 2025", "by": "aCCCess, European Commission, EIC; run by Blumorpho", "when": "18 Nov 2025, Messe München, during SEMICON Europa", "n": "18 of 87 applicants; 165+ participants; organisers report €50M+ in deals negotiated. Award: Vertical Compute; special mentions FaradaIC Sensors, SpiNNcloud", "u": "https://www.acccess.eu/chips-venture-forum/2025"}], "cvf2026": ["Agate Sensors", "AiQUOS", "ALCYON PHOTONICS", "Belfort Labs", "Biio", "Celtonn", "Circuits Integrated", "Comptek Solutions", "CORIS Cooling", "Cornea Sense Oy", "Dappler Labs", "DiagnostiQS", "Djolt AB", "Doors Photonics", "Endurance Semiconductors", "energHius SL", "Eulerwave", "Flow Computing", "FrostByte", "FurnaQuantum", "GeNeXIC GmbH", "IC Optimize", "ICECAP", "ICwaves", "Iddo (Innovative Devices Driving Objects)", "InSpek", "INTERA GROUP", "iQrypto", "KD tech", "Korymbos Photonics", "Last Mile Semiconductor", "Layer Metrics", "LeapWave Technologies", "Linque", "Lizard Photonics", "logiicdev", "Magnetfab", "MANTISPECTRA", "Nanopower Semiconductor", "Nellow", "Ommatidia LiDAR", "OneFab Nordic Oy", "PULSAR Microelectronics", "Quadrant Scientific", "Qualinx", "Quinas Technology", "Sencure", "Shinephi", "SiCure", "SideroGaIn GmbH", "Silent Waves", "SiPearl", "SLICE Semiconductor", "Spiketronix", "StarWarden", "Tegnology Aps", "Veintree", "Vertical Semiconductor", "VSTech Sensors", "Wise Integration", "Wooptix", "Zadient Technologies"], "overlap": ["Nellow", "Last Mile Semiconductor", "IC Waves", "FrostByte"], "domains": "Photonics, AI/ML hardware, MEMS & sensors, mainstream silicon, RF & mmWave, quantum, test & instrumentation, process equipment, power electronics, materials & substrates, packaging & assembly, EDA & design automation"}, "trainings": {"total": 64, "providers": [{"p": "POEMS", "n": 24}, {"p": "CC Chip.si", "n": 12}, {"p": "FC3", "n": 6}, {"p": "ChipNL CC", "n": 6}, {"p": "ASTEERICS", "n": 3}, {"p": "PIXSpain CC", "n": 3}, {"p": "FAMES (pilot line)", "n": 3}, {"p": "AT-C³", "n": 2}, {"p": "CADETTI", "n": 2}, {"p": "SK Chips CC", "n": 2}, {"p": "I-C3", "n": 1}], "topics": "IC design 27 · characterisation and test 18 · manufacturing 16 · process 15 · photonics 14 · device physics 7 · quantum 6 · quality and reliability 5 · materials 3", "note": "Counted on 4 Oct 2026. The catalogue's 'All (111)' is the sum of topic tags (a course can carry two topics); it lists 64 courses. 20 of the 30 centres have no course in it yet."}, "activities": [{"d": "2026-02-05", "t": "First ENCCC Annual Meeting, Brussels: all 30 centres with Chips JU, pilot lines and EuroCDP"}, {"d": "2026-05-13", "t": "Technology Offers #1: APECS with ChipNL"}, {"d": "2026-07-07", "t": "Technology Offers #3: FAMES with ASTEERICS and EuroCDP"}, {"d": "2026-09-22", "t": "Training Offers #1: ChipNL with CC Chip.si"}, {"d": "2026-10-27", "t": "Training Offers #2: PIXSpain with POEMS"}, {"d": "2026-10-29", "t": "Technology Offers #4: PIXEurope with PIXSpain"}, {"d": "2026-10-21", "t": "Chips Venture Forum selection, Bordeaux: 62 start-ups nominated through the centres meet investors"}, {"d": "2026-11-11", "t": "Chips Venture Forum final and CVF Award at SEMICON Europa, Munich"}], "links": [["Website", "https://www.acccess.eu/"], ["Network", "https://www.acccess.eu/network"], ["Trainings", "https://www.acccess.eu/trainings"], ["Technologies", "https://www.acccess.eu/technologies"], ["Open calls", "https://www.acccess.eu/open-calls"], ["Chips Venture Forum", "https://www.acccess.eu/chips-venture-forum"], ["Events", "https://www.acccess.eu/events"]]},
+  "compl": {"lede": "Where the competence centres overlap and where they complete each other. Based on the aCCCess survey of the centres (25 of 30 answered, February to May 2026) and on what the centres publish. Survey ratings are self-assessments.", "findings": ["Design is covered almost everywhere: 19 centres rate chip design and analog IC design as a main focus.", "Packaging and integration is the widest gap: 8 centres offer it as a main focus, 14 name it as a priority or a topic for cooperation.", "Scarce competences worth sharing across borders: quantum (8 centres), advanced lithography (6), EDA tools (5) and new wide-bandgap materials such as Ga₂O₃ and diamond (4).", "The strongest complementarity is in how centres work: 18 broker access to others' infrastructure, 7 open their own; 10 have a local design enablement team, 11 a private-funding team.", "Regional groups already cover most domains; the south-east group (GR, BG, RO) lacks packaging, quantum and four other domains as a main focus.", "Public output tells a different story from the survey: the aCCCess training catalogue lists courses from only 10 of the 30 centres."], "domains": [{"l": "Chip design", "f": "Design"}, {"l": "Analog/AMS IC", "f": "Design"}, {"l": "Digital IC", "f": "Design"}, {"l": "RF IC", "f": "Design"}, {"l": "ASIC/FPGA", "f": "Design"}, {"l": "EDA tools", "f": "Design"}, {"l": "Advanced digital", "f": "Design"}, {"l": "Digital platforms", "f": "Design"}, {"l": "Systems engineering", "f": "Design"}, {"l": "CMOS micro/nano", "f": "Process & materials"}, {"l": "Advanced lithography", "f": "Process & materials"}, {"l": "Cleanroom", "f": "Process & materials"}, {"l": "Non-CMOS micro/nano", "f": "Process & materials"}, {"l": "Compound semis", "f": "Process & materials"}, {"l": "Power electronics", "f": "Process & materials"}, {"l": "New wide-bandgap", "f": "Process & materials"}, {"l": "Materials", "f": "Process & materials"}, {"l": "Graphene/2D", "f": "Process & materials"}, {"l": "Flexible electronics", "f": "Process & materials"}, {"l": "Photonic ICs", "f": "Specialities"}, {"l": "Quantum", "f": "Specialities"}, {"l": "MEMS", "f": "Specialities"}, {"l": "High frequency & RF", "f": "Specialities"}, {"l": "Packaging & integration", "f": "Back-end & test"}, {"l": "Testing", "f": "Back-end & test"}, {"l": "Reliability", "f": "Back-end & test"}], "supply": [{"slug": "pack", "d": "Packaging & integration", "s": 8, "p": 14}, {"slug": "quant", "d": "Quantum", "s": 8, "p": 10}, {"slug": "uwbg", "d": "New wide-bandgap (Ga₂O₃, diamond)", "s": 4, "p": 5}, {"slug": "pic", "d": "Photonic ICs", "s": 15, "p": 14}, {"slug": "eda", "d": "EDA tools", "s": 5, "p": 3}, {"slug": "litho", "d": "Advanced lithography", "s": 6, "p": 3}, {"slug": "cmos", "d": "CMOS micro/nano", "s": 11, "p": 6}, {"slug": "rel", "d": "Reliability & failure analysis", "s": 11, "p": 6}, {"slug": "test", "d": "Testing & characterisation", "s": 14, "p": 8}, {"slug": "mems", "d": "MEMS & sensors", "s": 13, "p": 7}, {"slug": "design", "d": "Chip design", "s": 19, "p": 13}, {"slug": "mat", "d": "Materials", "s": 13, "p": 4}, {"slug": "power", "d": "Power electronics", "s": 14, "p": 4}, {"slug": "rf", "d": "High frequency & RF", "s": 14, "p": 3}], "profiles": [["Full chain", "7 centres", "Design, fabrication and back-end all ≥ 4 of 5", "Act as providers for brokers"], ["Fabrication", "4 centres", "Fabrication and wafer test ≥ 4", "Design centres as users, back-end partners"], ["Back-end", "3 centres", "Packaging, validation, reliability ≥ 4", "Design and fabrication centres"], ["Design", "3 centres", "Design ≥ 4, fabrication or back-end weak", "Fabrication and back-end"], ["Broker", "8 centres", "Own value-chain scores ≤ 3; services through partners (FMD, JePPIX, PIXEurope)", "Centres with their own infrastructure"]], "pairs": [["Design ↔ fabrication", "lithography, cleanroom and process development", "IC design (analog, digital, RF), ASIC/FPGA, EDA"], ["Design ↔ back-end", "packaging, validation and reliability testing", "design capacity and digital platforms"], ["Fabrication ↔ back-end", "packaging and system integration", "wafer processing and test"], ["Broker ↔ centres with own infrastructure (7)", "access to labs and cleanrooms for its users", "new users and demand from other countries"], ["Nordic-Baltic ↔ Central Europe", "EDA tools and systems engineering", "new wide-bandgap materials and graphene/2D"]], "regions": [["Central Europe", "CSC, SK Chips, AT-C³, HCHiP, CC Chip.si, CROCCS (Poland not in survey)", "23 of 26", "digital platforms, graphene/2D, new wide-bandgap"], ["Nordic-Baltic", "FiCCC, SCCC, CC-NorChip, DkCCC, LCCC, ChipsC²-LT (Estonia not in survey)", "23 of 26", "digital platforms, EDA, systems engineering"], ["Benelux", "ChipNL, FC3, ChipsWIN", "25 of 26", "new wide-bandgap"], ["Iberia", "PIXSpain, MicroNanoSpain, POEMS", "25 of 26", "EDA"], ["South-east", "HCCC, BG CC, RO-SMARTSYS", "20 of 26", "packaging, quantum, digital platforms, flexible electronics, graphene/2D, new wide-bandgap"], ["West and south", "G3C, ASTEERICS, I-C3, CADETTI", "22 of 26", "advanced lithography, CMOS, compound semis, materials"]], "entry": [["APECS (packaging)", "Packaging & integration", "8 centres; 14 want it", "APECS roadshow with AT-C³ (Oct); Technology Offers with ChipNL (May)"], ["NanoIC (below 2 nm)", "Advanced lithography", "6 centres", "Centre webinar with NanoIC (12 Oct)"], ["FAMES (FD-SOI)", "CMOS micro/nano", "11 centres", "Technology Offers with ASTEERICS and EuroCDP (Jul)"], ["PIXEurope (photonics)", "Photonic ICs", "15 centres", "Technology Offers with PIXSpain (29 Oct)"], ["WBG pilot line", "Power electronics / new wide-bandgap", "14 / 4 centres", "GaN and SiC courses at ASTEERICS (Oct)"], ["Quantum lines", "Quantum", "8 centres", "Quantum courses by CC Chip.si and ChipNL in the catalogue"], ["EuroCDP", "Local design enablement team", "10 centres", "Nordic meetup with FiCCC, SCCC, CC-NorChip, DkCCC (Sep)"], ["Chips Venture Forum", "Private-funding team and start-ups as a main target group", "10 centres", "I-C3 runs a funding-support service that prepares companies for CVF and EuroCDP"]], "themes": [["Training and skills", 13], ["Sharing infrastructure and equipment", 12], ["Start-ups, SMEs and investment", 8], ["Access to pilot lines and EuroCDP", 7], ["Service discovery, referral, catalogues", 6], ["Consortia and EU funding", 3]], "challenges": "Main challenges named: SME outreach 21, funding sustainability 21, skilled workforce 19, cross-centre collaboration 14, investment in equipment 12 (of 25 centres).", "missing": "Not in the survey: Cyprus, Estonia, Luxembourg, Malta and Poland.", "method": "Main focus = 3, secondary = 2, emerging = 1, not applicable = 0 across 26 domains. Demand = keyword coding of the centres' technology priorities and cooperation wishes. Value-chain profiles use the average support score (1–5) for design, fabrication and back-end stages. Shown in aggregate; ratings are self-assessments and some centres rate almost every domain as a main focus. Staff numbers sometimes cover the whole host institution. Contact details from the survey are not shown.", "public": [["Courses actually offered", "aCCCess training catalogue", "64 courses from 10 centres and FAMES"], ["Budgets and EU contribution", "host and ministry pages, Funding & Tenders portal", "e.g. HCHiP €7.91M, of which €3.96M EU, 48 months"], ["Cooperation that happens", "aCCCess events, LinkedIn", "webinar series pairing lines with centres, missions between centres"], ["Regional alliances", "LinkedIn, news", "Declaration of Graz (Oct 2025: AT, SE, CZ, FR, NL), Declaration of Bratislava (Nov 2025: SK, CZ), Nordic-Baltic MoU (Jan 2026), Iberian network (Jun 2026)"], ["Start-ups brought to investors", "Chips Venture Forum", "62 companies in 2026; the list does not name the nominating centre"], ["Reach", "LinkedIn followers", "SCCC ~2.5k, ChipNL ~2.4k, DkCCC ~2.3k, G3C, I-C3 and SK Chips ~1.2k"]], "agg": [{"g": "Full chain", "n": 7, "counts": [6, 6, 5, 4, 3, 2, 2, 1, 3, 2, 3, 3, 4, 4, 6, 3, 5, 2, 2, 5, 3, 4, 4, 2, 3, 3]}, {"g": "Fabrication", "n": 4, "counts": [4, 3, 3, 2, 3, 0, 4, 1, 1, 3, 0, 2, 3, 2, 1, 0, 2, 1, 1, 3, 1, 3, 4, 0, 3, 2]}, {"g": "Back-end", "n": 3, "counts": [2, 2, 0, 2, 2, 1, 0, 0, 1, 0, 0, 2, 1, 2, 3, 0, 0, 0, 0, 0, 0, 1, 1, 1, 3, 2]}, {"g": "Design", "n": 3, "counts": [3, 3, 2, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0, 1, 0]}, {"g": "Broker", "n": 8, "counts": [4, 5, 5, 4, 3, 1, 3, 1, 3, 5, 1, 5, 3, 2, 4, 1, 5, 3, 3, 7, 3, 3, 4, 5, 4, 4]}], "pairsNote": "Pairs between named centres are in the members' version."}
+}
+</script>
+
+<script>
+(function(){
+  const D = JSON.parse(document.getElementById('monitor-data').textContent);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const $ = id => document.getElementById(id);
+  const sec = Object.fromEntries(D.sectors.map(s => [s.id, s]));
+  const COMP = Object.fromEntries(D.components.map(c => [c.id, c]));
+  const ct = id => COMP[id] ? '<span class="ct" style="--cc:'+COMP[id].color+'">'+esc(COMP[id].name)+'</span>' : '';
+  const ringCls = n => 'r' + n;
+  const ringName = n => (D.rings.find(r => r.n === n) || {}).name || '';
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmt = (iso, approx) => { const [y,m,d] = iso.split('-').map(Number); return (approx ? '≈ ' : '') + (d ? d + ' ' : '') + MON[m-1] + ' ' + y; };
+  const lnk = (u, t) => u ? '<a href="'+esc(u)+'" target="_blank" rel="noopener">'+(t || '↗')+'</a>' : '';
+  const today = D.meta.updated;
+
+  $('strip').innerHTML = '<span><b>' + esc(D.meta.org) + '</b></span><span>Pillar I Monitor</span><span>Edition ' + esc(D.meta.edition) + ' · ' + esc(fmt(today)) + '</span><span>prepared by ' + esc(D.meta.author) + '</span>';
+  $('lede').textContent = D.meta.lede;
+  $('foot').textContent = 'EU Chips Act Pillar I Monitor · edition ' + D.meta.edition + ' · updated ' + fmt(today) + ' · ' + D.meta.org + ' · prepared by ' + D.meta.author;
+
+  // tabs (old anchors from the pilot-line edition still land on the right tab)
+  const alias = {radar:'pilotlines', lines:'pilotlines', timeline:'pilotlines', ccc:'pilotlines'};
+  const tabs = [...document.querySelectorAll('nav.tabs button')];
+  function show(id){
+    id = alias[id] || id;
+    if (!document.getElementById(id) || !document.getElementById(id).classList.contains('tab')) id = 'overview';
+    tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === id)));
+    document.querySelectorAll('section.tab').forEach(s => s.classList.toggle('on', s.id === id));
+  }
+  function go(id){ show(id); try { history.replaceState(null, '', '#' + id); } catch(e){} }
+  tabs.forEach(b => b.addEventListener('click', () => go(b.dataset.tab)));
+  show((location.hash || '#overview').slice(1));
+
+  const news = [...D.news].sort((a,b) => b.d.localeCompare(a.d));
+  const TY = Object.fromEntries((D.newsTypes || []).map(t => [t.id, t]));
+  const tyName = id => (TY[id] || {}).name || id;
+  const tyTag = id => '<span class="ty ty-'+esc(id)+'">'+esc(tyName(id))+'</span>';
+
+  // overview
+  $('stats').innerHTML = D.overview.stats.map(s => '<div class="stat" style="--cc:'+COMP[s.c].color+'"><div class="v">'+esc(s.v)+'</div><div class="l">'+esc(s.l)+'</div><div class="s">'+esc(s.s)+'</div></div>').join('');
+  $('comps').innerHTML = D.overview.status.map(c => '<div class="comp" style="--cc:'+COMP[c.c].color+'"><div class="st">'+esc(c.state)+'</div><h3>'+esc(c.head)+'</h3><p>'+esc(c.text)+'</p><button type="button" data-go="'+esc(c.go)+'">'+esc(c.btn || ('Open '+c.head.split(' (')[0].toLowerCase()))+' →</button></div>').join('');
+  $('comps').addEventListener('click', e => { const b = e.target.closest('button[data-go]'); if (b) { go(b.dataset.go); window.scrollTo({top:0}); } });
+  const hot = news.filter(n => n.ty === 'roadmap' || n.ty === 'service');
+  const watchHtml = list => '<h3>Roadmaps and new services</h3>' + (list.length
+    ? '<ul>' + list.map(n => '<li>'+(n.c||[]).map(ct).join('')+' <b>'+esc(n.line)+'</b> · '+esc(fmt(n.d, n.a))+' '+tyTag(n.ty)+'<br>'+esc(n.t)+'</li>').join('') + '</ul>'
+    : '<p class="note">No new roadmap or service announcements this week.</p>');
+  $('ovWatch').innerHTML = watchHtml(hot.slice(0, 6));
+  $('nextTbl').innerHTML = '<thead><tr><th>When</th><th>Component</th><th>Milestone</th></tr></thead><tbody>' +
+    D.overview.next.filter(x => x.d >= today.slice(0,7)).map(x => '<tr><td class="d">'+esc(x.when)+'</td><td>'+ct(x.c)+'</td><td>'+esc(x.t)+'</td></tr>').join('') + '</tbody>';
+
+  // pilot-line radar
+  (function(){
+    const W = 780, C = W/2, R = [0, 78, 150, 214, 278];
+    const weights = {logic:1.1, pack:0.8, phot:0.8, power:0.8, quant:2.5};
+    const total = D.sectors.reduce((a,s) => a + weights[s.id], 0);
+    let ang = -Math.PI/2 - (weights.logic/total)*Math.PI;
+    const span = {};
+    D.sectors.forEach(s => { const w = weights[s.id]/total*2*Math.PI; span[s.id] = [ang, ang + w]; ang += w; });
+    let svg = '<svg viewBox="0 0 ' + W + ' ' + W + '" role="img" aria-label="Readiness radar of 11 EU pilot lines">';
+    for (let i = 4; i >= 1; i--) svg += '<circle cx="'+C+'" cy="'+C+'" r="'+R[i]+'" fill="'+(i%2? 'var(--panel)':'var(--bg)')+'" stroke="var(--rule)"/>';
+    D.sectors.forEach(s => {
+      const a = span[s.id][0];
+      svg += '<line x1="'+C+'" y1="'+C+'" x2="'+(C+R[4]*Math.cos(a)).toFixed(1)+'" y2="'+(C+R[4]*Math.sin(a)).toFixed(1)+'" stroke="var(--rule)"/>';
+      const mid = (span[s.id][0]+span[s.id][1])/2, lr = R[4]+16;
+      const lx = C + lr*Math.cos(mid), ly = C + lr*Math.sin(mid);
+      const anchor = Math.abs(Math.cos(mid)) < .3 ? 'middle' : (Math.cos(mid) > 0 ? 'start' : 'end');
+      svg += '<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="12" font-weight="600" fill="'+s.color+'">'+esc(s.short || s.name)+'</text>';
+    });
+    for (let i = 1; i <= 4; i++) svg += '<text x="'+(C+4)+'" y="'+(C-R[i]+14)+'" font-size="11" fill="var(--faint)" font-family="ui-monospace,monospace">'+i+'</text>';
+    const groups = {};
+    D.lines.forEach(l => { const k = l.sector + '|' + l.ring; (groups[k] = groups[k] || []).push(l); });
+    Object.entries(groups).forEach(([k, arr]) => {
+      const [sid, ring] = k.split('|'); const [a0, a1] = span[sid]; const r = (R[ring-1] + R[ring]) / 2 + (ring == 1 ? 8 : 0);
+      arr.forEach((l, i) => {
+        const a = a0 + (a1 - a0) * (i + 1) / (arr.length + 1);
+        const x = C + r*Math.cos(a), y = C + r*Math.sin(a);
+        const right = Math.cos(a) >= 0;
+        svg += '<a href="#pilotlines" data-line="'+l.id+'" class="rlink"><circle class="dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="7" fill="'+sec[sid].color+'" stroke="var(--bg)" stroke-width="2"><title>'+esc(l.name+' · '+ringName(l.ring))+'</title></circle>' +
+               '<text x="'+(x + (right? 11 : -11)).toFixed(1)+'" y="'+(y+4).toFixed(1)+'" text-anchor="'+(right?'start':'end')+'" font-size="12.5" fill="var(--fg)">'+esc(l.name)+'</text></a>';
+      });
+    });
+    svg += '</svg>';
+    $('radarSvg').innerHTML = svg;
+    $('radarSvg').addEventListener('click', e => {
+      const a = e.target.closest('a.rlink'); if (!a) return; e.preventDefault();
+      const el = document.getElementById('line-' + a.dataset.line); if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    $('ringKey').innerHTML = D.rings.map(r => {
+      const who = D.lines.filter(l => l.ring === r.n).map(l => esc(l.name)).join(', ');
+      return '<div class="rk"><div class="n '+ringCls(r.n)+'">'+r.n+'</div><div><div class="t '+ringCls(r.n)+'">'+esc(r.name)+'</div><div class="d">'+esc(r.desc)+'</div><div class="who">'+who+'</div></div></div>';
+    }).join('');
+    $('sectorLegend').innerHTML = D.sectors.map(s => '<span><span class="sw" style="background:'+s.color+'"></span>'+esc(s.name)+'</span>').join('');
+  })();
+
+  // pilot-line timeline
+  (function(){
+    const t = d => Date.parse(d)/864e5, t0 = t('2026-01-01'), t1 = t('2029-01-01');
+    const X0 = 170, X1 = 900, W = 940, rowH = 30, top = 56;
+    const X = d => X0 + (t(d)-t0)/(t1-t0)*(X1-X0);
+    const xn = X(today);
+    const H = top + D.lines.length*rowH + 70;
+    let s = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Access timeline of 11 pilot lines">';
+    ['2026','2027','2028'].forEach(y => { s += '<text x="'+X(y+'-07-01')+'" y="34" text-anchor="middle" font-size="12" fill="var(--muted)">'+y+'</text>'; });
+    ['2026','2027','2028','2029'].forEach(y => { s += '<line x1="'+X(y+'-01-01')+'" x2="'+X(y+'-01-01')+'" y1="44" y2="'+(top+D.lines.length*rowH)+'" stroke="var(--rule)"/>'; });
+    D.lines.forEach((l, i) => {
+      const y = top + i*rowH + rowH/2, col = sec[l.sector].color;
+      s += '<text x="16" y="'+(y+4)+'" font-size="13" fill="var(--fg)">'+esc(l.name)+'</text>';
+      l.tl.forEach(g => {
+        if (g.k === 'open') { s += '<rect x="'+X(g.s)+'" y="'+(y-8)+'" width="'+(X(g.e)-X(g.s))+'" height="16" rx="8" fill="'+col+'" fill-opacity=".22" stroke="'+col+'"/>';
+          if (g.l) s += '<text x="'+(Math.max(X(g.s), xn)+8)+'" y="'+(y+4)+'" font-size="11.5" fill="var(--fg)">'+esc(g.l)+'</text>'; }
+        else if (g.k === 'plan') { const w = X(g.e)-X(g.s); s += '<rect x="'+X(g.s)+'" y="'+(y-8)+'" width="'+w+'" height="16" rx="8" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/>' +
+          '<text x="'+(w < 60 ? X(g.e)+8 : X(g.s)+8)+'" y="'+(y+4)+'" font-size="11.5" fill="var(--fg)">'+esc(g.l)+'</text>'; }
+        else if (g.k === 'mile') { const x = X(g.s); s += '<path d="M'+x+' '+(y-7)+'l7 7l-7 7l-7 -7z" fill="'+col+'"/><text x="'+(x+10)+'" y="'+(y+4)+'" font-size="11.5" fill="var(--fg)">'+esc(g.l)+'</text>'; }
+        else { s += '<text x="'+(xn+8)+'" y="'+(y+4)+'" font-size="11.5" font-style="italic" fill="var(--muted)">'+esc(g.l)+'</text>'; }
+      });
+    });
+    const yb = top + D.lines.length*rowH;
+    s += '<line x1="'+xn+'" x2="'+xn+'" y1="44" y2="'+yb+'" stroke="var(--warn)" stroke-dasharray="4 4"/>';
+    s += '<text x="'+xn+'" y="'+(yb+18)+'" text-anchor="middle" font-size="12" font-weight="600" fill="var(--warn)">today · '+esc(fmt(today))+'</text>';
+    const ly = yb + 46;
+    s += '<rect x="16" y="'+(ly-6)+'" width="24" height="12" rx="6" fill="var(--phot)" fill-opacity=".22" stroke="var(--phot)"/><text x="48" y="'+(ly+4)+'" font-size="12" fill="var(--muted)">open to external users</text>';
+    s += '<path d="M232 '+(ly-6)+'l6 6l-6 6l-6 -6z" fill="var(--phot)"/><text x="246" y="'+(ly+4)+'" font-size="12" fill="var(--muted)">announced milestone</text>';
+    s += '<rect x="390" y="'+(ly-6)+'" width="24" height="12" rx="6" fill="none" stroke="var(--muted)" stroke-dasharray="4 3"/><text x="422" y="'+(ly+4)+'" font-size="12" fill="var(--muted)">planned, exact date not announced</text>';
+    s += '</svg>';
+    $('tlSvg').innerHTML = s;
+  })();
+
+  // pilot-line cards and access tables
+  $('cards').innerHTML = D.lines.map(l => '<article class="card" id="line-'+l.id+'" style="--c:'+sec[l.sector].color+'">' +
+    '<h3>'+esc(l.name)+'<span class="pill '+ringCls(l.ring)+'">'+esc(ringName(l.ring))+'</span></h3>' +
+    '<div class="meta">'+esc(l.tech)+'<br>'+esc(l.coord)+' · '+esc(l.budget)+' · '+esc(l.consortium)+' · since '+esc(l.start)+'</div>' +
+    '<dl><dt>Status</dt><dd>'+esc(l.status)+'</dd><dt>Available now</dt><dd>'+esc(l.now)+'</dd><dt>Next</dt><dd>'+esc(l.next)+'</dd><dt>Entry point</dt><dd>'+esc(l.entry)+'</dd></dl>' +
+    '<div class="links">'+lnk(l.web, 'Website ↗')+lnk(l.li, 'LinkedIn ↗')+'</div></article>').join('');
+  $('legal').innerHTML = '<h3>Legal basis</h3><ul>' + D.legal.map(x => '<li>'+esc(x)+'</li>').join('') + '</ul>';
+  $('entryTbl').innerHTML = '<thead><tr><th>Line</th><th>Entry point</th><th>Pricing</th><th>Link to competence centres</th></tr></thead><tbody>' +
+    D.lines.map(l => '<tr><td><b>'+esc(l.name)+'</b></td><td>'+esc(l.entry)+'</td><td>'+esc(l.pricing)+'</td><td>'+esc(l.ccc)+'</td></tr>').join('') + '</tbody>';
+  $('modelTbl').innerHTML = '<thead><tr><th>Centre</th><th>Model</th><th>What it does</th></tr></thead><tbody>' +
+    D.models.map(m => '<tr><td><b>'+esc(m.cc)+'</b> <span class="tag">'+esc(m.ctry)+'</span></td><td>'+esc(m.model)+'</td><td>'+esc(m.what)+' '+lnk(m.u)+'</td></tr>').join('') + '</tbody>';
+
+  // design platform
+  const P = D.cdp;
+  $('cdpFacts').innerHTML = '<tbody>' + P.facts.map(f => '<tr><td class="k">'+esc(f[0])+'</td><td>'+esc(f[1])+'</td></tr>').join('') + '</tbody>';
+  const svcName = {live:'Live', building:'Being built', planned:'Planned', done:'Done'};
+  $('cdpSvc').innerHTML = '<thead><tr><th>Service</th><th>Status</th><th>Detail</th></tr></thead><tbody>' +
+    P.services.map(s => '<tr><td><b>'+esc(s.s)+'</b></td><td><span class="svc svc-'+esc(s.st)+'">'+esc(svcName[s.st] || s.st)+'</span></td><td>'+esc(s.n)+'</td></tr>').join('') + '</tbody>';
+  $('cdpAgr').innerHTML = '<thead><tr><th>Date</th><th>Vendor</th><th>Type</th><th>Scope</th></tr></thead><tbody>' +
+    [...P.agreements].sort((a,b) => b.d.localeCompare(a.d)).map(a => '<tr><td class="d">'+esc(fmt(a.d, a.a))+'</td><td><b>'+esc(a.who)+'</b></td><td><span class="tag">'+esc(a.k)+'</span></td><td>'+esc(a.n)+'</td></tr>').join('') + '</tbody>';
+  $('cdpCohort').innerHTML = '<p class="note" style="margin-top:0">'+esc(P.cohort.note)+'</p><div class="cohort"><div><b>Accelerate</b><ul>'+P.cohort.accelerate.map(x => '<li>'+esc(x)+'</li>').join('')+'</ul></div><div><b>Incubate</b><ul>'+P.cohort.incubate.map(x => '<li>'+esc(x)+'</li>').join('')+'</ul></div></div>' + (P.cohort.cross ? '<p class="note">'+esc(P.cohort.cross).replace('aCCCess tab', '<a href="#acc" data-go="acc">aCCCess tab</a>')+'</p>' : '');
+  $('cdpDet').innerHTML = '<thead><tr><th>DET</th><th>Host</th><th>Focus</th></tr></thead><tbody>' +
+    P.dets.map(x => '<tr><td><b>'+esc(x.n)+'</b> '+lnk(x.u)+'</td><td>'+esc(x.h)+'</td><td>'+esc(x.f)+'</td></tr>').join('') + '</tbody>';
+  $('cdpRoad').innerHTML = '<thead><tr><th>When</th><th>Step</th></tr></thead><tbody>' + P.roadmap.map(r => '<tr><td class="d">'+esc(r[0])+'</td><td>'+esc(r[1])+'</td></tr>').join('') + '</tbody>';
+  $('cdpLinks').innerHTML = P.links.map(l => lnk(l[1], esc(l[0]) + ' ↗')).join(' · ');
+
+  // aCCCess network action
+  const X = D.acc;
+  const nrm = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const mk = (txt, c) => '<span class="mk" style="--cc:'+COMP[c].color+'">'+txt+'</span>';
+  $('accFacts').innerHTML = '<tbody>' + X.facts.map(f => '<tr><td class="k">'+esc(f[0])+'</td><td>'+esc(f[1])+'</td></tr>').join('') + '</tbody>';
+  $('accRes').innerHTML = '<thead><tr><th>Result</th><th>Status</th><th>What it delivers</th></tr></thead><tbody>' +
+    X.results.map(r => '<tr><td><b>'+esc(r.r)+'</b></td><td><span class="svc svc-'+esc(r.st)+'">'+esc(svcName[r.st] || r.st)+'</span></td><td>'+esc(r.n)+' '+lnk(r.u)+'</td></tr>').join('') + '</tbody>';
+  const XV = X.venture;
+  const inCohort = new Set([...P.cohort.accelerate, ...P.cohort.incubate].map(nrm));
+  $('accVenture').innerHTML = '<div class="v">'+esc(XV.total)+'</div><div><p>'+esc(XV.summary)+'</p><p class="note" style="margin:0">'+esc(XV.overlapNote)+'</p></div>';
+  $('accVentTbl').innerHTML = '<thead><tr><th>Edition</th><th>Run by</th><th>When and where</th><th>Start-ups</th></tr></thead><tbody>' +
+    XV.programmes.map(p => '<tr><td><b>'+esc(p.p)+'</b></td><td>'+esc(p.by)+'</td><td>'+esc(p.when)+'</td><td>'+esc(p.n)+' '+lnk(p.u)+'</td></tr>').join('') + '</tbody>';
+  $('cvfList').innerHTML = '<b>Chips Venture Forum 2026: the '+XV.cvf2026.length+' selected companies</b> '+lnk('https://www.acccess.eu/chips-venture-forum/2026-companies', 'list ↗')+'<p class="note" style="margin-top:4px">Twelve market panels: '+esc(XV.domains)+'. Marked: also in the EuroCDP Venture Development Programme.</p><ul class="cvfl">' +
+    XV.cvf2026.map(x => '<li>'+esc(x)+(inCohort.has(nrm(x)) ? mk('EuroCDP', 'cdp') : '')+'</li>').join('') + '</ul>';
+  const TR = X.trainings, tmax = Math.max(...TR.providers.map(p => p.n));
+  $('accTrain').innerHTML = '<div class="callout"><p style="margin:0 0 10px"><b>'+TR.total+' courses</b> from '+TR.providers.length+' providers. Topics: '+esc(TR.topics)+'.</p>' +
+    '<div class="bars">' + TR.providers.map(p => '<div class="bar"><span class="bl">'+esc(p.p)+'</span><span class="bt"><span class="bf" style="width:'+(p.n / tmax * 100).toFixed(1)+'%"></span></span><span class="bn">'+p.n+'</span></div>').join('') + '</div>' +
+    '<p class="note">'+esc(TR.note)+' '+lnk('https://www.acccess.eu/trainings', 'catalogue ↗')+'</p></div>';
+  $('accAct').innerHTML = '<thead><tr><th>Date</th><th>Activity</th></tr></thead><tbody>' +
+    [...X.activities].sort((a,b) => b.d.localeCompare(a.d)).map(a => '<tr><td class="d">'+esc(fmt(a.d))+'</td><td>'+esc(a.t)+'</td></tr>').join('') + '</tbody>';
+  $('accLinks').innerHTML = X.links.map(l => lnk(l[1], esc(l[0]) + ' ↗')).join(' · ');
+
+  // complementarity of the centres
+  const M = D.compl;
+  $('cmpLede').textContent = M.lede;
+  $('cmpFind').innerHTML = '<h3>Key findings</h3><ul>' + M.findings.map(f => '<li>'+esc(f)+'</li>').join('') + '</ul>';
+  (function heatAgg(){
+    if (!M.agg) return;
+    const doms = M.domains, rows = M.agg, x0 = 176, cw = 21, rh = 22, y0 = 206;
+    const famStart = doms.map((d, j) => j === 0 || doms[j-1].f !== d.f);
+    const lastFam = famStart.lastIndexOf(true);
+    const fx = j => x0 + j * cw + (famStart.slice(0, j + 1).filter(Boolean).length - 1) * 8;
+    const W = fx(doms.length - 1) + cw + 4, H = y0 + rows.length * rh + 40;
+    let s = '<svg class="hm" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Number of centres with a main focus, by value-chain profile and domain">';
+    doms.forEach((d, j) => { if (famStart[j]) s += '<text class="fam" x="'+(j === lastFam ? fx(doms.length - 1) + cw : fx(j))+'" y="14" text-anchor="'+(j === lastFam ? 'end' : 'start')+'">'+esc(d.f)+'</text>'; });
+    doms.forEach((d, j) => { s += '<text class="dl" transform="translate('+(fx(j) + cw / 2 + 4)+',168) rotate(-90)">'+esc(d.l)+'</text>'; });
+    s += '<text class="tl" x="4" y="188">All 25 centres</text>';
+    doms.forEach((d, j) => { const t = rows.reduce((a, r) => a + r.counts[j], 0); s += '<text class="tn'+(t <= 8 ? ' lo' : '')+'" x="'+(fx(j) + cw / 2)+'" y="188" text-anchor="middle">'+t+'</text>'; });
+    rows.forEach((r, i) => {
+      const y = y0 + i * rh;
+      s += '<text class="cl" x="4" y="'+(y + 15)+'">'+esc(r.g)+' ('+r.n+')</text>';
+      doms.forEach((d, j) => { const v = r.counts[j], o = v / r.n; s += '<rect class="'+(v ? 'c' : 'c0')+'" x="'+(fx(j) + 1)+'" y="'+(y + 1)+'" width="'+(cw - 2)+'" height="'+(rh - 2)+'" rx="2"'+(v ? ' fill-opacity="'+(0.15 + 0.85 * o).toFixed(2)+'"' : '')+'><title>'+esc(r.g+': '+v+' of '+r.n+' centres – '+d.l)+'</title></rect>'; if (v) s += '<text class="hv" x="'+(fx(j) + cw / 2)+'" y="'+(y + 15)+'" text-anchor="middle">'+v+'</text>'; });
+    });
+    s += '<text class="lg" x="4" y="'+(H - 14)+'">Cells: number of centres in the profile that rate the domain as a main focus; darker = larger share of the profile.</text>';
+    $('cmpHeat').innerHTML = s + '</svg><p class="note">Self-assessment in the aCCCess survey (25 centres, Feb–May 2026), shown in aggregate. Highlighted totals: domains with at most 8 centres rating them as a main focus.</p>';
+  })();
+  if (!M.agg) (function heat(){
+    const doms = M.domains, rows = M.rows, x0 = 176, cw = 21, rh = 17, gap = 18, y0 = 216;
+    const famStart = doms.map((d, j) => j === 0 || doms[j-1].f !== d.f);
+    const lastFam = famStart.lastIndexOf(true);
+    const fx = j => x0 + j * cw + (famStart.slice(0, j + 1).filter(Boolean).length - 1) * 8;
+    const W = fx(doms.length - 1) + cw + 4;
+    const ys = []; let yy = y0, prev = '';
+    rows.forEach((r, i) => { if (i > 0 && r.g !== prev) yy += gap; ys.push(yy); prev = r.g; yy += rh; });
+    const H = yy + 40, op = v => [0, 0.16, 0.45, 1][v];
+    const tot = j => rows.filter(r => r.s.charAt(j) === '3').length;
+    const lvl = ['not applicable', 'emerging', 'secondary', 'main focus'];
+    let s = '<svg class="hm" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Capability map of 25 competence centres across 26 domains">';
+    doms.forEach((d, j) => { if (famStart[j]) s += '<text class="fam" x="'+(j === lastFam ? fx(doms.length - 1) + cw : fx(j))+'" y="14" text-anchor="'+(j === lastFam ? 'end' : 'start')+'">'+esc(d.f)+'</text>'; });
+    doms.forEach((d, j) => { s += '<text class="dl" transform="translate('+(fx(j) + cw / 2 + 4)+',168) rotate(-90)">'+esc(d.l)+'</text>'; });
+    s += '<text class="tl" x="4" y="188">Centres with main focus</text>';
+    doms.forEach((d, j) => { const t = tot(j); s += '<text class="tn'+(t <= 8 ? ' lo' : '')+'" x="'+(fx(j) + cw / 2)+'" y="188" text-anchor="middle">'+t+'</text>'; });
+    rows.forEach((r, i) => {
+      if (i === 0 || rows[i-1].g !== r.g) s += '<text class="gl" x="4" y="'+(ys[i] - 5)+'">'+esc(r.g.toUpperCase())+'</text>';
+      s += '<text class="cl" x="12" y="'+(ys[i] + 12.5)+'">'+esc(r.c)+' · '+esc(r.k)+'</text>';
+      doms.forEach((d, j) => { const v = Number(r.s.charAt(j)); s += '<rect class="'+(v ? 'c' : 'c0')+'" x="'+(fx(j) + 1)+'" y="'+(ys[i] + 1)+'" width="'+(cw - 2)+'" height="'+(rh - 2)+'" rx="2"'+(v ? ' fill-opacity="'+op(v)+'"' : '')+'><title>'+esc(r.c+': '+d.l+' – '+lvl[v])+'</title></rect>'; });
+    });
+    const lg = [[3, 'main focus'], [2, 'secondary'], [1, 'emerging'], [0, 'not applicable']];
+    lg.forEach((l, k) => { const lx = 12 + k * 130; s += '<rect class="'+(l[0] ? 'c' : 'c0')+'" x="'+lx+'" y="'+(H - 24)+'" width="12" height="12" rx="2"'+(l[0] ? ' fill-opacity="'+op(l[0])+'"' : '')+'/><text class="lg" x="'+(lx + 18)+'" y="'+(H - 14)+'">'+l[1]+'</text>'; });
+    $('cmpHeat').innerHTML = s + '</svg><p class="note">Self-assessment in the aCCCess survey (25 centres, Feb–May 2026). Highlighted totals: domains with at most 8 centres rating them as a main focus.</p>';
+  })();
+  (function gap(){
+    const rows = [...M.supply].sort((a, b) => (b.p - b.s) - (a.p - a.s));
+    const xL = 236, xR = 740, vmax = 20, x = v => xL + v / vmax * (xR - xL), y0 = 44, rh = 28, H = y0 + rows.length * rh + 34;
+    let s = '<svg class="dg" viewBox="0 0 760 '+H+'" role="img" aria-label="Supply and demand of competences by domain">';
+    s += '<circle cx="10" cy="14" r="5" class="sup"/><text class="lg" x="20" y="18">supply: centres with a main focus</text><circle cx="300" cy="14" r="5" class="dem"/><text class="lg" x="310" y="18">demand: centres naming it as a priority or cooperation topic</text>';
+    [0, 5, 10, 15, 20].forEach(t => { s += '<line class="gr" x1="'+x(t)+'" x2="'+x(t)+'" y1="'+(y0 - 6)+'" y2="'+(H - 28)+'"/><text class="lg" x="'+x(t)+'" y="'+(H - 12)+'" text-anchor="middle">'+t+'</text>'; });
+    s += '<text class="lg" x="4" y="'+(H - 12)+'">number of centres</text>';
+    rows.forEach((r, i) => {
+      const y = y0 + i * rh + rh / 2, up = r.p > r.s;
+      s += '<text class="dn'+(up ? ' up' : '')+'" x="4" y="'+(y + 4)+'">'+esc(r.d)+'</text>';
+      s += '<line class="'+(up ? 'lk up' : 'lk')+'" x1="'+x(r.s)+'" x2="'+x(r.p)+'" y1="'+y+'" y2="'+y+'"/>';
+      s += '<circle class="sup" cx="'+x(r.s)+'" cy="'+y+'" r="6"><title>'+esc(r.d+': '+r.s+' centres with a main focus')+'</title></circle>';
+      s += '<circle class="dem" cx="'+x(r.p)+'" cy="'+y+'" r="6"><title>'+esc(r.d+': '+r.p+' centres want it')+'</title></circle>';
+      s += '<text class="vs" x="'+(x(r.s) + (r.s >= r.p ? 10 : -10))+'" y="'+(y + 4)+'" text-anchor="'+(r.s >= r.p ? 'start' : 'end')+'">'+r.s+'</text>';
+      s += '<text class="vd" x="'+(x(r.p) + (r.p > r.s ? 10 : -10))+'" y="'+(y + 4)+'" text-anchor="'+(r.p > r.s ? 'start' : 'end')+'">'+r.p+'</text>';
+    });
+    $('cmpGap').innerHTML = '<p class="lead"><b>Packaging is wanted by 14 centres but offered as a main focus by 8.</b> Demand exceeds supply only for packaging, quantum and new wide-bandgap materials; in power electronics, RF and materials many centres offer the same and need to specialise.</p>' + s + '</svg>';
+  })();
+  $('cmpProf').innerHTML = '<thead><tr><th>Profile</th><th>Centres</th><th>Strong in</th><th>Needs</th></tr></thead><tbody>' + M.profiles.map(p => '<tr><td><b>'+esc(p[0])+'</b></td><td>'+esc(p[1])+'</td><td>'+esc(p[2])+'</td><td>'+esc(p[3])+'</td></tr>').join('') + '</tbody>';
+  $('cmpPairs').innerHTML = '<thead><tr><th>Pair</th><th>First centre gains</th><th>Second centre gains</th></tr></thead><tbody>' + M.pairs.map(p => '<tr><td><b>'+esc(p[0])+'</b></td><td>'+esc(p[1])+'</td><td>'+esc(p[2])+'</td></tr>').join('') + '</tbody>';
+  $('cmpReg').innerHTML = '<thead><tr><th>Group</th><th>Centres in the survey</th><th>Domains with a main focus</th><th>Missing</th></tr></thead><tbody>' + M.regions.map(p => '<tr><td><b>'+esc(p[0])+'</b></td><td>'+esc(p[1])+'</td><td class="d">'+esc(p[2])+'</td><td>'+esc(p[3])+'</td></tr>').join('') + '</tbody>';
+  $('cmpEntry').innerHTML = '<thead><tr><th>Pillar I component</th><th>Survey domain</th><th>Centres with a main focus</th><th>Cooperation on record</th></tr></thead><tbody>' + M.entry.map(p => '<tr><td><b>'+esc(p[0])+'</b></td><td>'+esc(p[1])+'</td><td>'+esc(p[2])+'</td><td>'+esc(p[3])+'</td></tr>').join('') + '</tbody>';
+  $('cmpThemes').innerHTML = '<thead><tr><th>Cooperation topic</th><th>Centres</th></tr></thead><tbody>' + M.themes.map(p => '<tr><td>'+esc(p[0])+'</td><td class="d">'+p[1]+'</td></tr>').join('') + '</tbody><caption class="cap">'+esc(M.challenges)+'</caption>';
+  $('cmpPublic').innerHTML = '<thead><tr><th>Evidence</th><th>Source</th><th>What it adds</th></tr></thead><tbody>' + M.public.map(p => '<tr><td><b>'+esc(p[0])+'</b></td><td>'+esc(p[1])+'</td><td>'+esc(p[2])+'</td></tr>').join('') + '</tbody>';
+  $('cmpMethod').textContent = M.missing + ' Method: ' + M.method;
+  document.addEventListener('click', e => { const a = e.target.closest('a[data-go]'); if (a) { e.preventDefault(); go(a.dataset.go); window.scrollTo({top:0}); } });
+
+  // competence centres
+  const K = D.ccc;
+  $('cccFacts').innerHTML = '<tbody>' + K.facts.map(f => '<tr><td class="k">'+esc(f[0])+'</td><td>'+esc(f[1])+'</td></tr>').join('') + '</tbody>';
+  $('cccAct').innerHTML = '<thead><tr><th>Date</th><th>Activity</th></tr></thead><tbody>' +
+    [...K.activities].sort((a,b) => b.d.localeCompare(a.d)).map(a => '<tr><td class="d">'+esc(fmt(a.d))+'</td><td>'+esc(a.t)+'</td></tr>').join('') + '</tbody>';
+  let cTag = 'all';
+  function renderCentres(){
+    const list = [...K.centres].sort((a,b) => a.ctry.localeCompare(b.ctry) || a.short.localeCompare(b.short)).filter(c => cTag === 'all' || (c.tags || []).includes(cTag));
+    $('cccCards').innerHTML = list.map(c => '<article class="card" style="--c:var(--c-ccc)"><h3>'+esc(c.short)+'<span class="tag">'+esc(c.ctry)+'</span></h3>' +
+      '<div class="meta">'+esc(c.name)+'<br>'+esc(c.host)+'</div><dl><dt>Focus</dt><dd>'+esc(c.spec)+'</dd>' +
+      (c.start && c.start !== '—' ? '<dt>Started</dt><dd>'+esc(c.start)+'</dd>' : '') +
+      (c.latest && c.latest !== '—' ? '<dt>Latest</dt><dd>'+esc(c.latest)+'</dd>' : '') + '</dl>' +
+      '<div class="links">'+lnk(c.web, 'Website ↗')+lnk(c.li, 'LinkedIn ↗')+'</div></article>').join('') || '<p class="note">No centre with this focus.</p>';
+    [...$('cccFilters').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === cTag)));
+  }
+  $('cccFilters').innerHTML = '<span class="lb">Focus</span><button type="button" data-v="all">All 30</button>' + K.tags.map(t => '<button type="button" data-v="'+esc(t)+'">'+esc(t)+'</button>').join('');
+  $('cccFilters').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; cTag = b.dataset.v; renderCentres(); });
+  renderCentres();
+
+  // news log
+  $('newsSub').textContent = news.length + ' items across Pillar I, newest first. Edition ' + D.meta.edition + '.';
+  $('watch').innerHTML = watchHtml(hot.slice(0, 8));
+  let fc = 'all', ft = 'all';
+  function renderNews(){
+    const rows = news.filter(n => (fc === 'all' || (n.c || []).includes(fc)) && (ft === 'all' || n.ty === ft));
+    $('newsTbl').innerHTML = '<thead><tr><th>Date</th><th>Who</th><th>What happened</th></tr></thead><tbody>' +
+      rows.map(n => '<tr><td class="d">'+esc(fmt(n.d, n.a))+'</td><td><span class="tag">'+esc(n.line)+'</span><br>'+(n.c||[]).map(ct).join('')+' '+tyTag(n.ty)+'</td><td>'+esc(n.t)+' '+lnk(n.u, 'source ↗')+'</td></tr>').join('') + '</tbody>';
+    [...$('fComp').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === fc)));
+    [...$('fType').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === ft)));
+  }
+  $('fComp').innerHTML = '<span class="lb">Component</span><button type="button" data-v="all">All</button>' + D.components.map(c => '<button type="button" data-v="'+c.id+'">'+esc(c.name)+'</button>').join('');
+  $('fType').innerHTML = '<span class="lb">Type</span><button type="button" data-v="all">All</button>' + (D.newsTypes || []).map(t => '<button type="button" data-v="'+esc(t.id)+'" title="'+esc(t.desc)+'">'+esc(t.name)+'</button>').join('');
+  $('fComp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; fc = b.dataset.v; renderNews(); });
+  $('fType').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; ft = b.dataset.v; renderNews(); });
+  renderNews();
+
+  // events
+  let fe = 'all';
+  function renderEvents(){
+    const ev = [...D.events].sort((a,b) => a.d.localeCompare(b.d)).filter(e => e.d >= today.slice(0,8) + '01').filter(e => fe === 'all' || (e.c || []).includes(fe));
+    $('evTbl').innerHTML = '<thead><tr><th>When</th><th>What</th><th>Why it matters</th></tr></thead><tbody>' +
+      ev.map(e => '<tr><td class="d">'+esc(e.when)+'</td><td>'+(e.c||[]).map(ct).join('')+'<br>'+esc(e.what)+' '+lnk(e.u)+'</td><td>'+esc(e.why)+'</td></tr>').join('') + '</tbody>';
+    [...$('fEv').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === fe)));
+  }
+  $('fEv').innerHTML = '<span class="lb">Component</span><button type="button" data-v="all">All</button>' + D.components.map(c => '<button type="button" data-v="'+c.id+'">'+esc(c.name)+'</button>').join('');
+  $('fEv').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; fe = b.dataset.v; renderEvents(); });
+  renderEvents();
+
+  // alpha + feedback
+  const FB = D.feedback;
+  $('alphabar').innerHTML = '<span>'+esc(FB.banner)+'</span><button type="button" id="goFb">Give feedback</button>';
+  $('goFb').addEventListener('click', () => { go('feedback'); window.scrollTo({top:0}); });
+  $('fbIntro').textContent = FB.intro;
+  $('fbList').innerHTML = FB.questions.map(q => '<li><b>'+esc(q[0])+'</b>'+esc(q[1])+'</li>').join('');
+  $('fbContact').innerHTML = '<h3>Send feedback</h3><p style="margin:0 0 6px">'+esc(FB.contactNote)+'</p><span class="mail" id="mailAddr">'+esc(FB.email)+'</span><button type="button" class="copy" id="copyMail">Copy address</button>';
+  $('copyMail').addEventListener('click', () => {
+    const b = $('copyMail');
+    const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy address', 1500); };
+    try { navigator.clipboard.writeText(FB.email).then(done, () => { selectMail(); }); } catch(e) { selectMail(); }
+  });
+  function selectMail(){ const r = document.createRange(); r.selectNodeContents($('mailAddr')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+
+  // sources
+  $('method').textContent = D.method;
+  $('srcList').innerHTML = D.sources.map(s => '<li>'+(s[1] ? lnk(s[1], esc(s[0])) : esc(s[0]))+'</li>').join('');
+})();
+</script>
+
+</body>
+</html>
