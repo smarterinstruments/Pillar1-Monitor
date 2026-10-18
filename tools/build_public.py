@@ -65,7 +65,7 @@ def build(src_html):
     if not html.lstrip().lower().startswith('<!doctype'):
         head_end = html.index('</style>') + len('</style>')
         meta = ('<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-                '<meta name="description" content="Independent weekly monitor of the EU Chips Act Pillar I: pilot lines, the European Chips Design Platform, the Chips Competence Centres and the aCCCess network action. Alpha version.">\n'
+                '<meta name="description" content="Independent weekly radar of the EU Chips Act Pillar I: pilot lines, the European Chips Design Platform, the Chips Competence Centres and the aCCCess network action. Alpha version.">\n'
                 '<meta name="robots" content="noindex">\n')
         html = '<!doctype html>\n<html lang="en">\n<head>\n' + meta + html[:head_end] + '\n</head>\n<body>\n' + html[head_end:] + '\n</body>\n</html>\n'
     return html
