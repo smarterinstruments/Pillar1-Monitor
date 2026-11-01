@@ -24,6 +24,11 @@ nav.tabs{display:flex;flex-wrap:wrap;gap:4px;overflow-x:auto;border-bottom:1px s
 nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:600 13px var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:10px 12px;cursor:pointer;white-space:nowrap}
 nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
 nav.tabs button:hover{color:var(--fg)}
+nav.tabs button.primary{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:.06em;background:rgba(55,138,221,.12);border:1px solid rgba(55,138,221,.55);border-radius:7px;padding:9px 16px;margin:5px 2px 7px 0}
+nav.tabs button.primary[aria-selected="true"]{background:var(--accent);color:#0b1220;border-color:var(--accent)}
+nav.tabs button.primary:hover{background:rgba(55,138,221,.24);color:var(--fg)}
+nav.tabs button.primary[aria-selected="true"]:hover{background:var(--accent);color:#0b1220}
+nav.tabs button#t-events{margin-right:14px}
 section.tab{display:none}
 section.tab.on{display:block}
 h2{font-size:20px;margin:0 0 6px;text-wrap:balance}
@@ -157,7 +162,9 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
   <div class="alphabar" id="alphabar"></div>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button role="tab" data-tab="overview" id="t-overview">Overview</button>
+    <button role="tab" class="primary" data-tab="overview" id="t-overview">Overview</button>
+    <button role="tab" class="primary" data-tab="news" id="t-news">This week</button>
+    <button role="tab" class="primary" data-tab="events" id="t-events">Events &amp; deadlines</button>
     <button role="tab" data-tab="pilotlines" id="t-pilotlines">Pilot lines</button>
     <button role="tab" data-tab="platform" id="t-platform">Design platform</button>
     <button role="tab" data-tab="centres" id="t-centres">Competence centres</button>
@@ -165,8 +172,6 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
     <button role="tab" data-tab="dgconnect" id="t-dgconnect">DG CONNECT</button>
     <button role="tab" data-tab="chipsju" id="t-chipsju">Chips JU</button>
     <button role="tab" data-tab="complementarity" id="t-complementarity">Complementarity</button>
-    <button role="tab" data-tab="news" id="t-news">This week</button>
-    <button role="tab" data-tab="events" id="t-events">Events &amp; deadlines</button>
     <button role="tab" data-tab="feedback" id="t-feedback">Feedback</button>
     <button role="tab" data-tab="sources" id="t-sources">Sources</button>
   </nav>
