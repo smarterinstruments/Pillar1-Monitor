@@ -18,22 +18,33 @@ a{color:#6fb3f2}
 a:focus-visible,button:focus-visible{outline:2px solid var(--phot);outline-offset:2px}
 .strip{font:12px/1.4 var(--mono);color:var(--muted);letter-spacing:.02em;display:flex;flex-wrap:wrap;gap:4px 14px;border-bottom:1px solid var(--rule);padding-bottom:10px}
 .strip b{color:var(--fg);font-weight:600}
-h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:18px 0 6px;letter-spacing:-.01em;text-wrap:balance}
-.lede{color:var(--muted);max-width:75ch;margin:0 0 18px}
-nav.tabs{display:flex;flex-wrap:wrap;gap:4px;overflow-x:auto;border-bottom:1px solid var(--rule);margin-bottom:22px;scrollbar-width:thin}
-nav.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:600 13px var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:10px 12px;cursor:pointer;white-space:nowrap}
-nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
-nav.tabs button:hover{color:var(--fg)}
-nav.tabs button.primary{color:var(--accent);font-weight:700;font-size:14px;letter-spacing:.06em;background:rgba(55,138,221,.12);border:1px solid rgba(55,138,221,.55);border-radius:7px;padding:9px 16px;margin:5px 2px 7px 0}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:6px 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.lede{color:var(--muted);max-width:none;font-size:13.5px;line-height:1.45;margin:0 0 8px}
+nav.tabs{display:flex;flex-wrap:wrap;gap:3px;overflow-x:auto;border-bottom:1px solid var(--rule);margin-bottom:10px;scrollbar-width:thin}
+.hrow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;margin:0 0 4px}
+.hrow h2{margin:0}
+h1 .eu{vertical-align:-4px;margin-right:4px}
+.harrow{color:var(--muted);font-size:18px;line-height:1;margin:0 -8px}
+button.back{background:rgba(239,138,60,.08);border:1px solid rgba(239,138,60,.6);border-radius:5px;color:#f3a862;font:600 11px var(--sans);letter-spacing:.02em;text-transform:uppercase;padding:2px 7px;margin-left:10px;cursor:pointer;vertical-align:middle;line-height:1.3}
+button.back:hover{background:rgba(239,138,60,.22);color:var(--fg)}
+.subnav{display:flex;flex-wrap:wrap;gap:3px;margin:0}
+.subnav button:hover{background:rgba(239,138,60,.22);color:var(--fg)}
+h3.sh,.callout.watch,#stats,.filters,table{scroll-margin-top:12px}
+.subnav button{background:rgba(239,138,60,.08);border:1px solid rgba(239,138,60,.6);border-radius:5px;color:#f3a862;font:600 12px var(--sans);letter-spacing:.02em;text-transform:uppercase;padding:3px 8px;margin:3px 1px 4px 0;cursor:pointer;white-space:nowrap;line-height:1.3}
+nav.tabs button{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.35);border-radius:5px;color:var(--fg);font:600 12px var(--sans);letter-spacing:.02em;text-transform:uppercase;padding:3px 8px;margin:3px 1px 4px 0;cursor:pointer;white-space:nowrap;line-height:1.3}
+nav.tabs button[aria-selected="true"]{background:#e8ecf2;color:#0b1220;border-color:#e8ecf2}
+nav.tabs button:hover{background:rgba(255,255,255,.12);color:var(--fg)}
+nav.tabs button[aria-selected="true"]:hover{background:#e8ecf2;color:#0b1220}
+nav.tabs button.primary{color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.03em;background:rgba(55,138,221,.12);border:1px solid rgba(55,138,221,.55);border-radius:5px;padding:3px 10px;margin:3px 1px 4px 0}
 nav.tabs button.primary[aria-selected="true"]{background:var(--accent);color:#0b1220;border-color:var(--accent)}
 nav.tabs button.primary:hover{background:rgba(55,138,221,.24);color:var(--fg)}
 nav.tabs button.primary[aria-selected="true"]:hover{background:var(--accent);color:#0b1220}
-nav.tabs button#t-events{margin-right:14px}
+nav.tabs button#t-events{margin-right:10px}
 section.tab{display:none}
 section.tab.on{display:block}
-h2{font-size:20px;margin:0 0 6px;text-wrap:balance}
+h2{font-size:20px;margin:0 0 4px;text-wrap:balance}
 h3.sh{font-size:16px;margin:26px 0 8px}
-.sub{color:var(--muted);margin:0 0 16px;max-width:75ch}
+.sub{color:var(--muted);margin:0 0 12px;max-width:none;font-size:13.5px;line-height:1.45}
 .grid2{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:24px;align-items:start}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .grid4{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -93,10 +104,12 @@ td.k{color:var(--muted);white-space:nowrap;font-weight:600}
 .callout ul{margin:6px 0 0;padding-left:18px}
 .watch{border-left:3px solid var(--warn)}
 .watch li{margin-bottom:4px}
-.filters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;align-items:center}
-.filters .lb{font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-right:4px}
-.filters button{background:var(--panel);border:1px solid var(--rule);color:var(--muted);border-radius:999px;padding:4px 11px;font:600 12px var(--sans);cursor:pointer}
-.filters button[aria-pressed="true"]{color:var(--fg);border-color:var(--fg)}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;align-items:center;padding:8px 10px;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+.filters + .filters{margin-top:-4px}
+.filters .lb{font:700 12px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--fg);margin-right:6px;min-width:86px}
+.filters button{--cc:var(--fg);background:rgba(255,255,255,.03);border:1px solid var(--cc);color:var(--cc);border-radius:999px;padding:4px 12px;font:600 12.5px var(--sans);cursor:pointer;opacity:.85}
+.filters button:hover{opacity:1;background:rgba(255,255,255,.08)}
+.filters button[aria-pressed="true"]{background:var(--cc);color:#0b1220;border-color:var(--cc);opacity:1}
 .ty{display:inline-block;font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:4px;border:1px solid currentColor;white-space:nowrap;margin-top:4px}
 .ty-roadmap{color:var(--warn)} .ty-service{color:var(--good)} .ty-event{color:#7cc0ff} .ty-milestone{color:var(--muted)}
 .svc{display:inline-block;font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:4px;border:1px solid currentColor;white-space:nowrap}
@@ -145,7 +158,8 @@ p.lead{max-width:80ch;margin:0 0 10px}
 caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted);padding-top:8px}
 .alpha{font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:2px 7px;vertical-align:middle;margin-left:6px}
 .alphabar{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--warn);border-radius:6px;padding:10px 14px;margin:0 0 18px;font-size:14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
-.alphabar button{background:none;border:1px solid var(--warn);color:var(--fg);border-radius:6px;padding:4px 10px;font:600 12px var(--sans);cursor:pointer}
+.fbbtn{background:none;border:1px solid var(--warn);color:var(--warn);border-radius:4px;padding:2px 7px;font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.08em;cursor:pointer;vertical-align:middle;margin-left:6px;line-height:normal}
+.fbbtn:hover{background:rgba(233,185,73,.15)}
 .fbq{max-width:80ch;padding-left:22px}
 .fbq li{margin-bottom:10px}
 .fbq b{display:block}
@@ -157,9 +171,8 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
 
 <div class="wrap">
   <div class="strip" id="strip"></div>
-  <h1>EU Chips Act Pillar I Weekly Radar <span class="alpha">alpha</span></h1>
+  <h1><svg class="eu" viewBox="0 0 32 32" width="30" height="30" aria-label="European Union" role="img"><rect width="32" height="32" rx="4" fill="#003399"/><g fill="#ffcc00"><polygon points="25.50,13.80 25.99,15.32 27.59,15.32 26.30,16.26 26.79,17.78 25.50,16.84 24.21,17.78 24.70,16.26 23.41,15.32 25.01,15.32"/><polygon points="24.23,18.55 24.72,20.07 26.32,20.07 25.03,21.01 25.52,22.53 24.23,21.59 22.93,22.53 23.43,21.01 22.13,20.07 23.73,20.07"/><polygon points="20.75,22.03 21.24,23.55 22.84,23.55 21.55,24.49 22.04,26.01 20.75,25.07 19.46,26.01 19.95,24.49 18.66,23.55 20.26,23.55"/><polygon points="16.00,23.30 16.49,24.82 18.09,24.82 16.80,25.76 17.29,27.28 16.00,26.34 14.71,27.28 15.20,25.76 13.91,24.82 15.51,24.82"/><polygon points="11.25,22.03 11.74,23.55 13.34,23.55 12.05,24.49 12.54,26.01 11.25,25.07 9.96,26.01 10.45,24.49 9.16,23.55 10.76,23.55"/><polygon points="7.77,18.55 8.27,20.07 9.87,20.07 8.57,21.01 9.07,22.53 7.77,21.59 6.48,22.53 6.97,21.01 5.68,20.07 7.28,20.07"/><polygon points="6.50,13.80 6.99,15.32 8.59,15.32 7.30,16.26 7.79,17.78 6.50,16.84 5.21,17.78 5.70,16.26 4.41,15.32 6.01,15.32"/><polygon points="7.77,9.05 8.27,10.57 9.87,10.57 8.57,11.51 9.07,13.03 7.77,12.09 6.48,13.03 6.97,11.51 5.68,10.57 7.28,10.57"/><polygon points="11.25,5.57 11.74,7.09 13.34,7.09 12.05,8.03 12.54,9.55 11.25,8.61 9.96,9.55 10.45,8.03 9.16,7.09 10.76,7.09"/><polygon points="16.00,4.30 16.49,5.82 18.09,5.82 16.80,6.76 17.29,8.28 16.00,7.34 14.71,8.28 15.20,6.76 13.91,5.82 15.51,5.82"/><polygon points="20.75,5.57 21.24,7.09 22.84,7.09 21.55,8.03 22.04,9.55 20.75,8.61 19.46,9.55 19.95,8.03 18.66,7.09 20.26,7.09"/><polygon points="24.23,9.05 24.72,10.57 26.32,10.57 25.03,11.51 25.52,13.03 24.23,12.09 22.93,13.03 23.43,11.51 22.13,10.57 23.73,10.57"/></g></svg> EU Chips Act Pillar I Weekly Radar <span class="alpha">alpha</span> <button type="button" class="fbbtn" id="goFb" title="Alpha version, open for feedback. Corrections are applied every week.">Give feedback</button></h1>
   <p class="lede" id="lede"></p>
-  <div class="alphabar" id="alphabar"></div>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button role="tab" class="primary" data-tab="overview" id="t-overview">Overview</button>
@@ -308,7 +321,6 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
   <section class="tab" id="news">
     <h2>News log</h2>
     <p class="sub" id="newsSub"></p>
-    <div class="callout watch" id="watch"></div>
     <div class="filters" id="fComp" role="group" aria-label="Filter by component"></div>
     <div class="filters" id="fType" role="group" aria-label="Filter by type"></div>
     <div class="scroll"><table id="newsTbl"></table></div>
@@ -755,8 +767,9 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
       svg += '<line x1="'+C+'" y1="'+C+'" x2="'+(C+R[4]*Math.cos(a)).toFixed(1)+'" y2="'+(C+R[4]*Math.sin(a)).toFixed(1)+'" stroke="var(--rule)"/>';
       const mid = (span[s.id][0]+span[s.id][1])/2, lr = R[4]+16;
       const lx = C + lr*Math.cos(mid), ly = C + lr*Math.sin(mid);
-      const anchor = Math.abs(Math.cos(mid)) < .3 ? 'middle' : (Math.cos(mid) > 0 ? 'start' : 'end');
-      svg += '<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="12" font-weight="600" fill="'+s.color+'">'+esc(s.short || s.name)+'</text>';
+      let anchor = Math.abs(Math.cos(mid)) < .3 ? 'middle' : (Math.cos(mid) > 0 ? 'start' : 'end'), tx = lx;
+      if (Math.abs(Math.cos(mid)) >= .5) { anchor = Math.cos(mid) > 0 ? 'end' : 'start'; tx = Math.cos(mid) > 0 ? W - 4 : 4; }  // keep the big labels inside the drawing
+      svg += '<text x="'+tx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" text-anchor="'+anchor+'" font-size="19" font-weight="800" letter-spacing=".04em" style="text-transform:uppercase" fill="'+s.color+'">'+esc(s.short || s.name)+'</text>';
     });
     for (let i = 1; i <= 4; i++) svg += '<text x="'+(C+4)+'" y="'+(C-R[i]+14)+'" font-size="11" fill="var(--faint)" font-family="ui-monospace,monospace">'+i+'</text>';
     const groups = {};
@@ -975,7 +988,6 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
 
   // news log
   $('newsSub').textContent = news.length + ' items across Pillar I, newest first. Edition ' + D.meta.edition + '.';
-  $('watch').innerHTML = watchHtml(hot.slice(0, 8));
   let fc = 'all', ft = 'all';
   function renderNews(){
     const rows = news.filter(n => (fc === 'all' || (n.c || []).includes(fc)) && (ft === 'all' || n.ty === ft));
@@ -984,8 +996,9 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
     [...$('fComp').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === fc)));
     [...$('fType').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === ft)));
   }
-  $('fComp').innerHTML = '<span class="lb">Component</span><button type="button" data-v="all">All</button>' + D.components.map(c => '<button type="button" data-v="'+c.id+'">'+esc(c.name)+'</button>').join('');
-  $('fType').innerHTML = '<span class="lb">Type</span><button type="button" data-v="all">All</button>' + (D.newsTypes || []).map(t => '<button type="button" data-v="'+esc(t.id)+'" title="'+esc(t.desc)+'">'+esc(t.name)+'</button>').join('');
+  $('fComp').innerHTML = '<span class="lb">Component</span><button type="button" data-v="all">All</button>' + D.components.map(c => '<button type="button" data-v="'+c.id+'" style="--cc:'+c.color+'">'+esc(c.name)+'</button>').join('');
+  const TYC = {roadmap:'var(--warn)', service:'var(--good)', event:'#7cc0ff', milestone:'#c9d1dc'};
+  $('fType').innerHTML = '<span class="lb">Type</span><button type="button" data-v="all">All</button>' + (D.newsTypes || []).map(t => '<button type="button" data-v="'+esc(t.id)+'" title="'+esc(t.desc)+'" style="--cc:'+(TYC[t.id] || 'var(--fg)')+'">'+esc(t.name)+'</button>').join('');
   $('fComp').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; fc = b.dataset.v; renderNews(); });
   $('fType').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; ft = b.dataset.v; renderNews(); });
   renderNews();
@@ -998,14 +1011,47 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
       ev.map(e => '<tr><td class="d">'+esc(e.when)+'</td><td>'+(e.c||[]).map(ct).join('')+'<br>'+esc(e.what)+' '+lnk(e.u)+'</td><td>'+esc(e.why)+'</td></tr>').join('') + '</tbody>';
     [...$('fEv').querySelectorAll('button')].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === fe)));
   }
-  $('fEv').innerHTML = '<span class="lb">Component</span><button type="button" data-v="all">All</button>' + D.components.map(c => '<button type="button" data-v="'+c.id+'">'+esc(c.name)+'</button>').join('');
+  $('fEv').innerHTML = '<span class="lb">Component</span><button type="button" data-v="all">All</button>' + D.components.map(c => '<button type="button" data-v="'+c.id+'" style="--cc:'+c.color+'">'+esc(c.name)+'</button>').join('');
   $('fEv').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; fe = b.dataset.v; renderEvents(); });
   renderEvents();
 
   // alpha + feedback
   const FB = D.feedback;
-  $('alphabar').innerHTML = '<span>'+esc(FB.banner)+'</span><button type="button" id="goFb">Give feedback</button>';
+  $('goFb').title = FB.banner;
   $('goFb').addEventListener('click', () => { go('feedback'); window.scrollTo({top:0}); });
+  // Animate: a guided tour that jumps from section to section through every tab; any key stops it where it is
+  const TOUR = {};
+  (function(){
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'fbbtn'; btn.id = 'goTour';
+    btn.textContent = 'Animate'; btn.title = 'Jump through all sections of all tabs, looping; press any key to stop';
+    $('goFb').insertAdjacentElement('afterend', btn);
+    let running = false, timer = 0;
+    function stop(e){ if (!running) return; if (e && e.preventDefault) e.preventDefault(); running = false; clearTimeout(timer); btn.textContent = 'Animate'; document.removeEventListener('keydown', stop, true); }
+    function start(){
+      if (running) { stop(); return; }
+      running = true; btn.textContent = 'Stop (any key)'; btn.blur();
+      document.addEventListener('keydown', stop, true);
+      const stops = [];
+      tabs.map(b => b.dataset.tab).forEach(id => { stops.push([id, null]); (TOUR[id] || []).forEach(x => stops.push([id, x[1]])); });
+      let i = 0, pages = 0;
+      function step(){
+        if (!running) return;
+        if (i >= stops.length) i = 0;  // loop: start again from the first tab
+        const [id, el] = stops[i++];
+        if (location.hash.slice(1) !== id) { go(id); }
+        if (el === 'pages') {  // long lists without sections: page down until the end, then move on
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          if (window.scrollY < max - 2 && pages < 40) { window.scrollBy({top: window.innerHeight - 90, behavior:'smooth'}); pages++; i--; }
+          else pages = 0;
+          if (pages === 0) { timer = setTimeout(step, 400); return; }
+        }
+        else if (el) el.scrollIntoView({behavior:'smooth', block:'start'}); else window.scrollTo({top:0, behavior:'smooth'});
+        timer = setTimeout(step, 2600);
+      }
+      step();
+    }
+    btn.addEventListener('click', start);
+  })();
   $('fbIntro').textContent = FB.intro;
   $('fbList').innerHTML = FB.questions.map(q => '<li><b>'+esc(q[0])+'</b>'+esc(q[1])+'</li>').join('');
   $('fbContact').innerHTML = '<h3>Send feedback</h3><p style="margin:0 0 6px">'+esc(FB.contactNote)+'</p><span class="mail" id="mailAddr">'+esc(FB.email)+'</span><button type="button" class="copy" id="copyMail">Copy address</button>';
@@ -1018,7 +1064,41 @@ caption.cap{caption-side:bottom;text-align:left;font-size:13px;color:var(--muted
 
   // sources
   $('method').textContent = D.method;
-  $('srcList').innerHTML = D.sources.map(s => '<li>'+(s[1] ? lnk(s[1], esc(s[0])) : esc(s[0]))+'</li>').join('');
+  // only the kinds of sources are listed; individual items link to their source on the This week and Events tabs
+  $('srcList').innerHTML = [
+    'Websites and LinkedIn company pages of the pilot lines, EuroCDP, the competence centres and aCCCess',
+    'Newsletters where they are public: LinkedIn newsletters of the lines, centres and the Chips JU (Chips Pulse), and newsletter archives on the initiatives\u2019 websites',
+    'CORDIS project pages and the Chips JU website (calls, news, work-programme appendix, annual activity report)',
+    'European Commission, DG CONNECT: Chips Act and Chips Act 2.0 policy pages, news and events',
+    'Industrial Alliance for Semiconductors (ALLPROS.eu) and partner press releases',
+    'Only generally available public information is used; members-only or internal material is not. The aCCCess survey of the centres is shown in aggregate only.'
+  ].map(s => '<li>'+s+'</li>').join('');
+
+  // in-page navigation: one row of jump buttons per tab, built from its section headings
+  document.querySelectorAll('section.tab').forEach(s => {
+    const items = [];
+    if (s.id === 'overview') items.push(['Overview', $('stats')], ['Roadmaps and new services', $('ovWatch')]);
+    s.querySelectorAll('h3.sh').forEach(hd => items.push([hd.textContent, hd]));
+    if (s.id === 'news' || s.id === 'events') TOUR[s.id] = [['Pages', 'pages']]; else TOUR[s.id] = items.slice();
+    if (items.length < 2) return;
+    const nav = document.createElement('div'); nav.className = 'subnav';
+    nav.setAttribute('aria-label', 'On this tab');
+    nav.innerHTML = items.map((x, i) => '<button type="button" data-i="'+i+'">'+esc(x[0])+'</button>').join('');
+    nav.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; items[+b.dataset.i][1].scrollIntoView({behavior:'smooth', block:'start'}); });
+    const h2 = s.querySelector(':scope > h2');
+    const row = document.createElement('div'); row.className = 'hrow';
+    h2.insertAdjacentElement('beforebegin', row); row.appendChild(h2);
+    const arrow = document.createElement('span'); arrow.className = 'harrow'; arrow.textContent = '\u2192'; arrow.setAttribute('aria-hidden', 'true');
+    row.appendChild(arrow); row.appendChild(nav);
+    // a Back button beside every section heading returns to the top of the page
+    items.forEach(x => {
+      const hd = x[1].matches && x[1].matches('h3') ? x[1] : x[1].querySelector(':scope > h3');
+      if (!hd || hd.querySelector('button.back')) return;
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'back'; b.textContent = '\u2191 Back';
+      b.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+      hd.appendChild(b);
+    });
+  });
 })();
 </script>
 
